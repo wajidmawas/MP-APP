@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "MP APP",
+    "slug": "com-MPAPP-app",
+    "version": "1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#daeffd"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com-MPAPP-app",
+      "buildNumber": "1.0",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location. We may use and store information about your location if you give us permission to do so. We use this data to provide features of our App, such as recording your catch locations and providing localized content. You can enable or disable location services through your device settings at any time",
+        "NSLocationWhenInUseUsageDescription ": "Allow $(PRODUCT_NAME) to use your location. We may use and store information about your location if you give us permission to do so. We use this data to provide features of our App, such as recording your catch locations and providing localized content. You can enable or disable location services through your device settings at any time",
+        "NSLocationAlwaysUsageDescription": "Allow $(PRODUCT_NAME) to use your location. We may use and store information about your location if you give us permission to do so. We use this data to provide features of our App, such as recording your catch locations and providing localized content. You can enable or disable location services through your device settings at any time",
+        "NSContactsUsageDescription": "Allow $(PRODUCT_NAME) to access your contacts."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "READ_CONTACTS"
+      ],
+      "package": "com.MPAPP.app",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c28d4087-b371-4f4b-97a8-fb20b7aa321e"
+      }
+    }
+  },
+  "plugins": [
+    [
+      "expo-location",
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location. We may use and store information about your location if you give us permission to do so. We use this data to provide features of our App, such as recording your catch locations and providing localized content. You can enable or disable location services through your device settings at any time",
+        "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location. We may use and store information about your location if you give us permission to do so. We use this data to provide features of our App, such as recording your catch locations and providing localized content. You can enable or disable location services through your device settings at any time",
+        "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location. We may use and store information about your location if you give us permission to do so. We use this data to provide features of our App, such as recording your catch locations and providing localized content. You can enable or disable location services through your device settings at any time"
+      },
+      "expo-image-picker",
+      {
+        "microphonePermission": false
+      },
+      "expo-contacts",
+      {
+        "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
+      }
+    ]
+  ]
+}

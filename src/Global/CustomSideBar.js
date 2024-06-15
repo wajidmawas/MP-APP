@@ -1,0 +1,207 @@
+import React, { useContext,useEffect, useState } from 'react'
+import { StyleSheet, Image, View, Text, TouchableOpacity,Alert,AlertIOS,Platform,ToastAndroid} from 'react-native';
+import {
+    DrawerContentScrollView,
+    DrawerItem,
+} from '@react-navigation/drawer';
+import Container from '../components/Container';
+import Services from '../actions/services';
+import ImageAssets from '../Global/ImageAssests';
+import { LinearGradient } from 'expo-linear-gradient';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import CONSTANTS from '../Global/Constants';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { AppContext } from '../Global/Stores';
+import Loader from '../components/Loader';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+
+
+
+
+
+const CustomSideBar = (props) => {
+    const [AlertHdr, setAlertHdr] = useState("Delete Account");
+const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete your account?");
+    const [storeState, dispatch] = useContext(AppContext);
+    const navigation = useNavigation();
+    const [userObject, setUserObject] = useState({}); 
+    const [val, setVal] = useState(false);
+    const notifyMessage = (msg) => {
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(msg, ToastAndroid.SHORT)
+        } else {
+          Alert.alert(msg);
+        }
+      }
+    const showConfirmDialog = (_props) => { 
+        setAlertHdr("Delete Account")
+        setAlertHdrMsg("Are you sure you want to delete your account?")
+        return Alert.alert(
+            AlertHdr,
+            AlertHdrMsg,
+            [
+                // The "Yes" button
+                {
+                    text: "Yes Delete",
+                    onPress: () => {
+                        deleteAccount(_props);
+                    },
+                },
+                // The "No" button
+                // Does nothing but dismiss the dialog when tapped
+                {
+                    text: "Cancel",
+                },
+            ]
+        );
+    };
+    useEffect(() => {
+        onLoad()
+        //console.log("Home page Ended:");
+    }, [])
+    const onLoad = async () => { 
+        await AsyncStorage.getItem("userSession").then(async (value) => {
+            let obj = JSON.parse(value);
+            var _userObject = obj;
+            if (_userObject != undefined) {  
+                setUserObject(_userObject) 
+                 
+
+            }
+        })
+            .then(res => {
+                //do something else
+            });
+
+    }
+
+    
+    const deleteAccount  = async (_props) => {
+        await AsyncStorage.getItem("userSession").then(async (value) => {
+            let obj = JSON.parse(value);
+            var _userObject = obj;
+        var service = new Services();
+        
+        const body = {
+            TypeId: 4,
+            UserId:_userObject.ID,
+            FilterId: _userObject.ID,
+            FilterText: ''
+        }; 
+        console.log("Body" + JSON.stringify(body) )
+        service.postData('/_getMasters', body).then(data => {
+           
+            if (data == null || data == "") {
+                notifyMessage("Invalid request object");
+                return false;
+            } 
+            
+            var resonseData = JSON.parse(data)
+            console.log("Response" + data)
+            if (resonseData.errorCode == -100) {
+                notifyMessage("No User Found");
+            }
+            else if (resonseData.errorCode == 200) {  
+               AsyncStorage.setItem("votersList","");
+               AsyncStorage.setItem("userSession", "") 
+               _props.nav.dispatch(DrawerActions.closeDrawer())
+               _props.nav.replace("AuthStack", { screen: 'StartScreen' });
+            }
+        });
+    })
+    }
+    const CustomDrawerItem = (props) => (
+   
+        <DrawerItem {...props} style={styles.DrawerItemContainer}
+            icon={({ size }) => (
+                <View style={styles.DrawerItemImageContainer}><Icon style={styles.DrawerItemImage} name={[props.icon]} color={'#00445D'} size={wp('5%')} /></View>
+            )}
+            label={props.label}
+            labelStyle={styles.DrawerItemLabel}
+            onPress={() => {
+                switch (props.label) {
+                    case 'Dashboard':
+                        props.nav.navigate("Home");
+                        break;
+                        case 'Reports':
+                            props.nav.navigate("Reports");
+                            break;
+                        case 'Add Coodinator':
+                            props.nav.navigate("AddCoordinator");
+                            break;
+                            case 'Assembly Wise Beneficiaries':
+                            props.nav.navigate("AssemblyWiseBeneficiaries");
+                            break;
+                            case 'My Beneficiaries':
+                                props.nav.navigate("MyBeneficiaries");
+                            break;
+                            case 'My Coordinators':
+                                props.nav.navigate("MyCoordinators");
+                            break;
+                            case 'User Wise Beneficiaries':
+                                props.nav.navigate("UserWiseBeneficiaries");
+                                break;
+                    case 'Logout':
+                        AsyncStorage.setItem('userSession', "")
+                        props.nav.dispatch(DrawerActions.closeDrawer())
+                        props.nav.replace("AuthStack", { screen: 'StartScreen' });
+                        break; 
+                    case 'My Profile':
+                        props.nav.navigate("MyProfile");
+                        break;
+                        case 'Delete Account': 
+                            showConfirmDialog(props);
+                            break;
+    
+                }
+    
+            }}
+        />
+    )
+    return (
+        <LinearGradient
+            colors={['#7fddff', '#fff']}
+            style={styles.background}
+            useAngle={true}
+            start={{ x: 0.6, y: 0.35 }}
+            end={{ x: 1, y: 1 }}
+        >
+            <View style={styles.Container}>
+
+                <View style={styles.UserNameContainer}>
+                    {/* <Image style={styles.UserNameImage} source={ImageAssets.user} /> */}
+                    {/*  */}
+                    <Text style={styles.UserName}>Hi, {userObject!=undefined ? userObject.NAME : "User"}</Text>
+                </View>
+                
+            </View>
+
+            <View style={styles.Container1}>
+                {/* <CustomDrawerItem label='My Profile' icon="username" nav={navigation}     /> */}
+                <CustomDrawerItem label='Dashboard' icon="view-dashboard" nav={navigation} />   
+                   
+                <CustomDrawerItem label='Logout' icon="logout" nav={navigation} /> 
+                <CustomDrawerItem label='Delete Account' icon="delete" nav={navigation} />
+                {/* <CustomDrawerItem label='Campaigns' icon="username" nav={navigation}  />
+                     <CustomDrawerItem label='ChangePassword' icon="username" nav={navigation}  /> */}
+            </View>
+        </LinearGradient>
+    );
+}
+export default CustomSideBar
+
+const styles = StyleSheet.create({
+    background:{width:"100%"},
+    Container: { height: 90, paddingLeft: wp('0%'), paddingTop: wp('5%'), width:"80%" },
+    Container1: { height: hp("94%"), paddingLeft: wp('0%'), width:"100%", paddingTop: wp('5%') },
+    DrawerItemContainer: { color: '#00445D',width:"100%" }, 
+    DrawerItemImageContainer: { justifyContent: "center", alignItems: "center" },
+    DrawerItemImage: { position: 'absolute', left: 3,  },
+    DrawerItemLabel: { fontSize: wp("4%"), color: '#00445D', paddingLeft: wp('3%') },
+    BackButtonContainer: { justifyContent: "flex-start" },
+    BackButton: { width: wp('6%'), height: wp('6%'), marginHorizontal: wp("5%"), },
+    UserNameContainer: { flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: 10 },
+    UserNameImage: { width: 25, height: 25, marginHorizontal: wp("5%"), position: 'absolute', left: 5, },
+    UserName: { fontSize: wp("4%"), fontWeight: "bold", color: '#00445D', paddingLeft: 30,width:"100%" }, 
+})

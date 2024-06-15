@@ -1,0 +1,41 @@
+
+export const axiosURL = "https://grievances.pulseadmin.in/projects/iah_app/api/"; //Prod
+//export const axiosURL = "https://cwapi.orderaider.com/api/"; // Prod
+//eas build -p android --profile preview
+// "buildType": "app-bundle"
+// "buildType": "apk"
+export const apiKey = "CF703BE5EC3D487587AF543620BAA3FB";
+export const SET_ALERT = "SET_ALERT";
+export const REMOVE_ALERT = "REMOVE_ALERT";
+export const GET_PROFILE = "GET_PROFILE";
+export const PROFILE_ERROR = "PROFILE_ERROR";
+export const CLEAR_PROFILE = "CLEAR_PROFILE";
+
+export const auth = {
+  REGISTER_SUCCESS: "REGISTER_SUCCESS",
+  REGISTER_FAIL: "REGISTER_FAIL",
+  USER_LOADED: "USER_LOADED",
+  AUTH_ERROR: "AUTH_ERROR",
+  EDIT_VERSION_NUMBER: "EDIT_VERSION_NUMBER",
+  LOGIN_SUCCESS: "LOGIN_SUCCESS",
+  LOGIN_FAIL: "LOGIN_FAIL",
+  LOGOUT: "LOGOUT",
+};
+
+export const adminAuth = {
+  ADMIN_REGISTER_SUCCESS: "ADMIN_REGISTER_SUCCESS",
+  ADMIN_REGISTER_FAIL: "ADMIN_REGISTER_FAIL",
+  ADMIN_USER_LOADED: "ADMIN_USER_LOADED",
+  ADMIN_AUTH_ERROR: "ADMIN_AUTH_ERROR",
+  ADMIN_LOGIN_SUCCESS: "ADMIN_LOGIN_SUCCESS",
+  ADMIN_LOGIN_FAIL: "ADMIN_LOGIN_FAIL",
+  ADMIN_LOGOUT: "ADMIN_LOGOUT",
+};
+
+export const locationTypes = {
+  LOCATIONS_LOADING: "LOCATIONS_LOADING",
+  GET_LOCATIONS_FAIL: "GET_LOCATIONS_FAIL",
+  GET_ALL_LOCATIONS: "GET_ALL_LOCATIONS",
+  // GET_QUOTES_BETWEEN_DATE: "GET_QUOTES_BETWEEN_DATE",
+  // PUT_UPDATE_QUOTE: "PUT_UPDATE_QUOTE",
+}; 

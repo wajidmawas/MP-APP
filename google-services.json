@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "521530280170",
+    "project_id": "cloudadword-studio",
+    "storage_bucket": "cloudadword-studio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521530280170:android:07772858af1b335d7a6f93",
+        "android_client_info": {
+          "package_name": "com.cloudadword.studio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "521530280170-at4rvm8nfif9egetam4e1q2fv097qmuh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJEKXhecKJtusNoZcTf3CSKTxfF4q5KgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "521530280170-at4rvm8nfif9egetam4e1q2fv097qmuh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Map Location</title>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js'></script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js" 
+  crossorigin="anonymous"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7e69dom1mxwKW-OTzTNgrgVML2DA3RL4&libraries=places"
+        defer></script>
+		<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/js-marker-clusterer/1.0.0/markerclusterer_compiled.js" 
+  crossorigin="anonymous"></script>
+</head>
+<body ng-controller="MapCtrl" ng-app="myApp">
+ <div id="map" style="height: 600px; overflow: auto;">
+</div>
+<script type='text/javascript'>
+var app = angular.module("myApp", []);
+app.controller("MapCtrl", function ($scope, $http,$location) { 
+var url = window.location.href 
+var _userid=url.split('=').pop().replace("#!/","");
+var map, marker;
+var mapDiv = document.getElementById('map'); 
+  
+	 $scope.CreateRequest = function (data, url) {
+    var req = {
+        method: 'POST',
+        url: url,
+        headers: {
+            'Content-Type': 'application/json',
+            'ApiKey': 'CF703BE5EC3D487587AF543620BAA3FB'
+        },
+        data: JSON.stringify(data)
+    }
+    return req;
+}
+
+	  $scope.getMasters = function () { 
+  var data = {
+      typeid: 18,
+      FilterId: _userid, 
+      UserId: _userid,
+      FilterText: '1'
+  }
+  var url = 'https://vamshiapi.pulseadmin.in/projects/iah_app/api/_getMasters'
+
+  $http($scope.CreateRequest(data, url)).then(function (response) { 
+			if(response.status==200){
+			if(response.data.response.Table.length>0){
+
+		  var center = new google.maps.LatLng(response.data.response.Table[0].lat, response.data.response.Table[0].lon);
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 15,
+      center: center,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var markers = [];
+	 var mcOptions = { 
+          styles:[{
+
+          url: "https://pulseadmin.in/images/blue-dot.png",
+                width: 53,
+                height:53,
+                fontFamily:"comic sans ms",
+                textSize:15,
+                textColor:"red",
+                //color: #00FF00,
+          }]
+
+        };
+    for (var i = 0; i < response.data.response.Table.length; i++) {
+      var location = response.data.response.Table[i];
+      var latLng = new google.maps.LatLng(location.lat,
+          location.lon);
+      var marker = new google.maps.Marker({
+        position: latLng,
+		text:location.member_name,
+		icon: 'https://pulseadmin.in/images/blue-dot.png'
+      });
+      markers.push(marker);
+    }
+    var markerCluster = new MarkerClusterer(map, markers,mcOptions); 
+				 
+			}
+			 
+			}
+            
+             //window.location.reload();
+         },
+             function (data) {
+                 alert("error occured")
+                 // Handle error here
+             })
+ 
+ }
+ if(_userid!=undefined && _userid!=null)
+ $scope.getMasters();
+ else
+ alert("Invalid Userid");
+})
+</script>
+</body>
+</html>
