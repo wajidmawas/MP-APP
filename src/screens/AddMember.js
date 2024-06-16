@@ -365,7 +365,7 @@ const onRecordingStatusUpdate =async(e)=>{
                         value={PTitle.value}
                         style={styles.input}
                         selectionColor={'#000'}
-                        maxLength={10}
+                        maxLength={100}
                         onChangeText={(text) => setPTitle({ value: text, error: '' })}
                         error={!!PTitle.error}
                         errorText={PTitle.error}
