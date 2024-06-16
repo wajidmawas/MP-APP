@@ -61,16 +61,7 @@ const ViewList = (props) => {
     const [fillIsmobile, setfillIsmobile] = React.useState(false)
     const [location, setLocation] = useState(null);
     const [AllTables, setTables] = React.useState("")
-    const [CasteList, setCasteList] = React.useState("")
-    const [PreferenceList, setPreferenceList] = React.useState("")
-    const [SubCasteList, setSubCasteList] = React.useState("")
-    const [AllSubCasteList, setAllSubCasteList] = React.useState("")
-    const [OccupationList, setOccupationList] = React.useState("")
-    const [CasteSelected, setCasteSelected] = React.useState("")
-    const [PreferenceSelected, setPreferenceSelected] = React.useState("")
-    const [SubCasteSelected, setSubCasteSelected] = React.useState("")
-
-    const [OccupationSelected, setOccupationSelected] = React.useState("")
+    const [PetitionList, setPetitionList] = React.useState("")    
     const isMobile = ["ఉంది", "లేదు"]
     const [imageselected, setImage] = useState(null);
     const clickImage = async () => {
@@ -129,7 +120,7 @@ const ViewList = (props) => {
             setscreenName(props["route"]["params"]["screenName"])
         }
         GetCurrentLocation();
-        onLoad();
+        onLoad(props["route"]["params"]["screenName"]);
     }, [])
     const GetCurrentLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -167,125 +158,43 @@ const ViewList = (props) => {
         }
 
     }
-    const onLoad = async () => {
-        setloading(false)
-        loadDataFromDB(props["route"]["params"]["screenName"]);
+    const onLoad = async (screenName) => {
+        setloading(false) 
+        loadMastersData(screenName);
+    } 
+    const reloadData = async () => {
+        setloading(true) 
         loadMastersData();
     }
-    const loadOfflineDataFromDB = async () => {
-        await AsyncStorage.getItem("votersList").then(async (value) => {
-            let obj = JSON.parse(value);
-            if (obj != undefined) {
-                setloading(false)
-                let tempList = obj.slice(0, pageCnt + 50);
-                setVerifiedList(tempList)
-                let _temp = 0;
-                _temp = _temp + 50;
-                setpageCnt(_temp);
-                sertotalVerifiedList(obj)
-            }
-            else {
-                loadDataFromDB(props["route"]["params"]["screenName"]);
-            }
-        })
-    }
 
-    const reloadData = async () => {
-        setloading(true)
-        AsyncStorage.setItem("votersList", "");
-        loadDataFromDB(props["route"]["params"]["screenName"]);
-    }
-
-    const loadDataFromDB = async (_scn) => {
+    
+    const loadMastersData = async (screenName) => {
         await AsyncStorage.getItem("userSession").then(async (value) => {
             let obj = JSON.parse(value);
-            var _userObject = obj;
+            var _userObject = obj; 
             if (_userObject != undefined) {
                 setUserObject(_userObject)
                 var service = new Services();
-                console.log(_scn)
                 const body = {
-                    TypeId: 100,
+                    TypeId: 4,
                     filterId: _userObject.ID,
-                    FilterText: _scn == "Voters to Meet" ? "" : "1",
-                    UserId: _userObject.ID,
+                    filterText: screenName,
+                    UserId: _userObject.ID, 
                 };
-                console.log(body);
+                 
                 service.postData('/_getMasters', body).then(data => {
-                    setloading(false)
+
                     if (data == null || data == "") {
                         openSnackBar("Invalid request object");
                         return false;
                     }
-                    var resonseData = JSON.parse(data)
-
-                    if (resonseData.errorCode == -100 || resonseData.errorCode == -200) {
+                    var resonseData = JSON.parse(data) 
+                    if (resonseData.errorCode == -100) {
                         notifyMessage(resonseData.response);
                     }
                     else if (resonseData.errorCode == 200) {
-                        let _dt = resonseData.response["Table"];
-                        if (_scn == "Manifesto Sent to Voters") {
-                            _dt = _dt.filter(a => a.isWhatsupSend > 0);
-                        }
-                        else if (_scn == "Manifesto to be Sent") {
-                            _dt = _dt.filter(a => a.isWhatsupSend == 0);
-                        }
-                        AsyncStorage.setItem("votersList", JSON.stringify(_dt));
-                        loadOfflineDataFromDB();
-                    }
-                });
-            }
-        })
-            .then(res => {
-                //do something else
-            });
-    }
-    const loadMastersData = async () => {
-        await AsyncStorage.getItem("userSession").then(async (value) => {
-            let obj = JSON.parse(value);
-            var _userObject = obj;
-            if (_userObject != undefined) {
-                setUserObject(_userObject)
-                var service = new Services();
-                const body = {
-                    TypeId: 6,
-                    filterId: _userObject.ID,
-                    filterText: "",
-                    UserId: _userObject.ID,
-                };
-                service.postData('/_getMasters', body).then(data => {
-
-                    if (data == null || data == "") {
-                        openSnackBar("Invalid request object");
-                        return false;
-                    }
-                    var resonseData = JSON.parse(data)
-                    if (resonseData.errorCode == -100) {
-                        notifyMessage(resonseData.message);
-                    }
-                    else if (resonseData.errorCode == 200) {
                         setTables(resonseData.response)
-                        var _filteredList = [];
-                        resonseData.response["Table"].map((myValue, myIndex) => {
-                            _filteredList.push(myValue.name);
-                        });
-
-                        setCasteList(_filteredList);
-                        _filteredList = [];
-                        resonseData.response["Table1"].map((myValue, myIndex) => {
-                            _filteredList.push(myValue.name);
-                        });
-                        setOccupationList(_filteredList);
-                        _filteredList = [];
-                        resonseData.response["Table2"].map((myValue, myIndex) => {
-                            _filteredList.push(myValue.name);
-                        });
-                        setPreferenceList(_filteredList);
-                        _filteredList = [];
-                        resonseData.response["Table3"].map((myValue, myIndex) => {
-                            _filteredList.push(myValue.name);
-                        });
-                        setAllSubCasteList(_filteredList);
+                        setPetitionList(resonseData.response["Table"]);  
                     }
                 });
             }
@@ -298,161 +207,12 @@ const ViewList = (props) => {
         setModalVisible(false)
         setsaveConfirmation(false)
     }
-    const OnPreferenceChange = async (_preferenceSelect) => {
-        setPreferenceSelected(_preferenceSelect);
-        if (_preferenceSelect == "కాంగ్రెస్ కార్యకర్త") {
-            setshowUpload(true);
-        }
-        else {
-            setshowUpload(false);
-        }
-    }
-
-    const onChangeCaste = async (_casteSelected) => {
-        var casteID = AllTables["Table"].filter(a => a.name == _casteSelected)
-        setCasteSelected(_casteSelected);
-        if (casteID != null && casteID.length > 0) {
-            var _filterSub = AllTables["Table3"].filter(a => a.cid == casteID[0].seqno);
-            let _filteredList = [];
-            _filterSub.map((myValue, myIndex) => {
-                _filteredList.push(myValue.name);
-            });
-            setSubCasteList(_filteredList);
-        }
-    }
-    const OpenWhatsApp = async () => {
-        if (MobileNo.value === '' || MobileNo.value === undefined
-            || MobileNo.value === null) {
-            notifyMessage('Please enter mobile no')
-            return;
-        }
-        setloading(true)
-        var service = new Services();
-        const body = {
-            code: UniqueCode,
-            userid: userObject.ID,
-            seqno: SeqNo,
-            boothno: PBNO,
-            assemblyId: AssemblyId,
-            userid: userObject.ID,
-            msg: whatsappmessage,
-            from_no: userObject.MOBILE,
-            to_no: MobileNo.value,
-        };
-
-        service.postData('/_sendMessage', body).then(data => {
-            console.log(data)
-            setloading(false)
-            if (data == null || data == "") {
-                openSnackBar("Invalid request object");
-                return false;
-            }
-            var resonseData = JSON.parse(data)
-            if (resonseData.errorCode == -100 || resonseData.errorCode == -200) {
-                notifyMessage(resonseData.response);
-            }
-            else if (resonseData.errorCode == 200) {
-                AsyncStorage.setItem("votersList", "");
-                Linking.openURL('whatsapp://send?text=' + whatsappmessage + '&phone=' + MobileNo.value)
-                setTimeout(() => {
-                    props.navigation.replace('DrawerStack', { screen: 'Home' })
-                }, 500);
-            }
-        });
-
-    }
+     
+    
     const go2Home = async () => {
         props.navigation.replace('DrawerStack', { screen: 'Home' })
     }
-    const SaveMember = async () => {
-
-        if (MobileNo.value === '' || MobileNo.value === undefined
-            || MobileNo.value === null) {
-            notifyMessage('Please enter mobile no')
-            return;
-        }
-        else if (CasteSelected === '' || CasteSelected === undefined
-            || CasteSelected === null) {
-            notifyMessage('Please select')
-        }
-        // else  if (SubCasteSelected === '' || SubCasteSelected === undefined
-        // || SubCasteSelected === null) {
-        // notifyMessage('Please select sub caste')
-        // }
-        else if (OccupationSelected === '' || OccupationSelected === undefined
-            || OccupationSelected === null) {
-            notifyMessage('Please select')
-        }
-        else if (PreferenceSelected === '' || PreferenceSelected === undefined
-            || PreferenceSelected === null) {
-            notifyMessage('Please select')
-        }
-        else if (PreferenceSelected === "కాంగ్రెస్ కార్యకర్త" && (imageselected === undefined
-            || imageselected === null || imageselected === "")) {
-            notifyMessage('Please select image')
-        }
-        else {
-            var service = new Services();
-            setdisabledButton(true)
-            let _cID = 0, _oID = 0, _pID = 0, _scID = 0;
-            let selectedItem = AllTables["Table"].filter(a => a.name == CasteSelected)
-            if (selectedItem != null && selectedItem.length > 0) {
-                _cID = selectedItem[0].seqno;
-            }
-            selectedItem = AllTables["Table1"].filter(a => a.name == OccupationSelected)
-            if (selectedItem != null && selectedItem.length > 0) {
-                _oID = selectedItem[0].seqno;
-            }
-            selectedItem = AllTables["Table2"].filter(a => a.name == PreferenceSelected)
-            if (selectedItem != null && selectedItem.length > 0) {
-                _pID = selectedItem[0].seqno;
-            }
-
-            selectedItem = AllTables["Table3"].filter(a => a.name == SubCasteSelected)
-            if (selectedItem != null && selectedItem.length > 0) {
-                _scID = selectedItem[0].seqno;
-            }
-            var payload = new FormData();
-
-            payload.append('UserId', userObject.ID);
-            payload.append('id', SeqNo);
-            payload.append('caste', _cID);
-            payload.append('subCasteName', _scID);
-            payload.append('VotingPref', _pID);
-            payload.append('VersionNo', "3.0");
-            payload.append('Mobile', MobileNo.value);
-            payload.append('Profession', _oID);
-            payload.append('boothNO', PBNO);
-            payload.append('latitude', location != undefined && location != null && location.coords != null ? location.coords.latitude : "");
-            payload.append('longitude', location != undefined && location != null && location.coords != null ? location.coords.longitude : "");
-            if (imageselected != null && imageselected != "") {
-                payload.append('imagePath2', {
-                    uri: imageselected.uri,
-                    type: 'image/jpeg',
-                    name: "test"
-                });
-            }
-            service.postFormData('/_UpdateVoterDetails', payload).then(data => {
-                setVal(false)
-                setdisabledButton(false)
-                if (data == null || data == "") {
-                    openSnackBar("Invalid request object");
-                    return false;
-                }
-
-                var resonseData = JSON.parse(data)
-                if (resonseData.errorCode == -100 || resonseData.errorCode == -200) {
-                    notifyMessage(resonseData.message);
-                }
-                else if (resonseData.errorCode == 200) {
-                    notifyMessage("Successfully submitted");
-                    AsyncStorage.setItem("votersList", "");
-                    setsaveConfirmation(true);
-
-                }
-            });
-        }
-    }
+   
 
     const back = () => {
         props.navigation.replace('DrawerStack', { screen: 'Home' })
@@ -471,58 +231,7 @@ const ViewList = (props) => {
         editdetails(item, 0);
         setMobileNo({ value: item.Mobile })
     }
-    const editdetails = (item, flg) => {
-        setshowUpload(false);
-        setMobileNo({ value: '' })
-        if (flg == 1)
-            setModalVisible(true)
-        setName("")
-        setEName("")
-        setRName("")
-        setREName("")
-        setAge("")
-        setHNO("")
-        setEpicNo("")
-        setSeqNo(0)
-        setwhatsappmessage("")
-        setUniqueCode("")
-        setPBNO("")
-        setAssemblyId("")
-        var service = new Services();
-        const body = {
-            TypeId: 10,
-            UserId: userObject.ID,
-            FilterId: userObject.ID,
-            FilterText: item.SeqNo
-        };
-        service.postData('/_getMasters', body).then(data => {
-            setVal(false)
-            //console.log(data);
-            if (data == null || data == "") {
-                openSnackBar("Invalid request object");
-                return false;
-            }
-
-            var resonseData = JSON.parse(data)
-            if (resonseData.errorCode == -100) {
-                notifyMessage(resonseData.message);
-            }
-            else if (resonseData.errorCode == 200) {
-                setName(resonseData.response["Table"][0].name)
-                setEName(resonseData.response["Table"][0].EVoter)
-                setRName(resonseData.response["Table"][0].GuardianName)
-                setREName(resonseData.response["Table"][0].EGuardianName)
-                setAge(resonseData.response["Table"][0].Age)
-                setHNO(resonseData.response["Table"][0].House_No)
-                setEpicNo(resonseData.response["Table"][0].EPIC_NO)
-                setSeqNo(item.SeqNo)
-                setwhatsappmessage(resonseData.response["Table"][0].whatsappmessage)
-                setUniqueCode(resonseData.response["Table"][0].unique_code)
-                setPBNO(resonseData.response["Table"][0].PBNO)
-                setAssemblyId(resonseData.response["Table"][0].AC_NO)
-            }
-        });
-    }
+    
     const addmember = () =>{
         props.navigation.replace('DrawerStack', { screen: 'AddMember' })
     }
@@ -545,11 +254,11 @@ const ViewList = (props) => {
                 <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
 
                     <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
-                        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
+                        <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
-                        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
+                        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
 
                     </TouchableOpacity>
                 </View>
@@ -573,39 +282,40 @@ const ViewList = (props) => {
                                     <View style={{ backgroundColor: "transparent", paddingBottom: hp('10%') }} animationEnabled={false}>
                                         <>
 
+                                        {PetitionList != null && PetitionList != undefined && PetitionList.length>0 && PetitionList.map((item, index) => (
+  <View style={styles.div_bg} >
+  <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
-                                            <View style={styles.div_bg} >
-                                                <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+       
+      <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
+      <Text style={{ fontSize: wp('5%'), color: "#383838", fontFamily: "InterBold" }}>{item.title}</Text>
+      <Text style={{ fontSize: wp('3.5%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.description}</Text>
+  </View>
+  </View> 
+  <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
-                                                    <View style={{ width: 32, height: 32, backgroundColor: '#faab3b', borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
 
-                                                        <Text style={{ color: "#fff", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>1</Text>
-
-                                                    </View>
-                                                    <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
-                                                    <Text style={{ fontSize: wp('5%'), color: "#383838", fontFamily: "InterBold" }}>Seqno</Text>
-                                                    <Text style={{ fontSize: wp('3.5%'), color: "#adadad", fontFamily: "InterRegular" }}>Lorem Ipsum simply dummy text</Text>
-                                                </View>
-                                                </View> 
-                                                <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-
- 
 <View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
-    <View style={{ flexDirection: "row",alignItems:'center' }}>
-<Icon name='image' size={wp('4%')} color={'#5592d9'}></Icon>
-<Text style={{ marginLeft:wp('2%'),fontSize: wp('3.5%'), color: "#383838", fontFamily: "InterBold" }}>4</Text>
-</View>
-<View style={{ flexDirection: "row",alignItems:'center' }}>
-<Icon name='video' size={wp('4%')} color={'#5592d9'}></Icon>
-<Text style={{ marginLeft:wp('2%'),fontSize: wp('3.5%'), color: "#383838", fontFamily: "InterBold" }}>4</Text>
-</View>
+<View style={{ flexDirection: "row",alignItems:'center' }}> 
+<Text  style={{ marginLeft:wp('2%'),color: "#faab3b", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>{item.status}</Text>
+</View> 
+<View style={{ flexDirection: "row",alignItems:'center' }}> 
+<TouchableOpacity onPress={() => { props.navigation.openDrawer() }} style={{ flexDirection: "row", alignItems: "center", }}>
+<Icon name='eye' size={wp('4%')} color={'#5592d9'}></Icon>
+<Text  style={{ marginLeft:wp('2%'),color: "#000", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>View</Text>
+ </TouchableOpacity>
+
+</View> 
 <View style={{ flexDirection: "row",alignItems:'center' }}>
 <Icon name='clock' size={wp('4%')} color={'#5592d9'}></Icon>
-<Text style={{ marginLeft:wp('2%'),fontSize: wp('3.5%'), color: "#383838", fontFamily: "InterBold" }}>02:10PM</Text>
+<Text style={{ marginLeft:wp('2%'),fontSize: wp('3.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.format_date}</Text>
 </View>
 </View>
 </View> 
-                                            </View>
+</View>
+                                       ))
+                                    }
+                                          
 
 
                                         </>
@@ -677,91 +387,10 @@ const ViewList = (props) => {
                                             selectionColor={'#000'}
                                             onChangeText={(text) => setMobileNo({ value: text })}
                                         />
-                                        {/* <TouchableOpacity onPress={() => { OpenWhatsApp() }} style={{ top: 0  }}>
-
-                                               <Text style={{ color: "#25D366"  }}> ఓటరు కు వాట్సాప్ పంపించుటకు క్లిక్ చేయండి <Icon name="whatsapp" size={wp('6%')} color={"#25D366"} /></Text> 
-
-</TouchableOpacity> */}
+                                         
                                     </View>
-                                    <View style={{ width: ('100%'), marginBottom: 2 }}>
-                                        <Text style={UserLabel.labelinput} >Who do you normally vote?</Text>
-                                        <HashedDropdown dropdownName="Select" style={UserLabel.input}
-                                            onSelect={(selectedItem, index) => onChangeCaste(selectedItem)}
-                                            dropdownList={CasteList} type="Caste" />
-                                    </View>
-                                    <View style={{ width: ('100%'), marginBottom: 2 }}>
-                                        <Text style={UserLabel.labelinput} >Do you feel the current Member of Parliament representing your interests?</Text>
-                                        <HashedDropdown dropdownName="Select" style={UserLabel.input}
-                                            onSelect={(selectedItem, index) => setSubCasteSelected(selectedItem)}
-                                            dropdownList={SubCasteList} type="SubCaste" />
-                                    </View>
-                                    <View style={{ width: ('100%'), marginBottom: 5 }}>
-                                        <Text style={UserLabel.labelinput} >Do you think the change in local election to Liberal Democrats will bring you the change you have been longing for?</Text>
-                                        <HashedDropdown dropdownName="Select" style={UserLabel.input}
-                                            onSelect={(selectedItem, index) => setOccupationSelected(selectedItem)}
-                                            dropdownList={OccupationList} type="Profession" />
-                                    </View>
-                                    <View style={{ width: ('100%'), marginBottom: 5 }}>
-                                        <Text style={UserLabel.labelinput} >Who do you think is responsible for the bankruptcy of the Council, increase in Council tax, increase in cost of living? </Text>
-                                        <HashedDropdown dropdownName="Select" style={UserLabel.input}
-                                            onSelect={(selectedItem, index) => OnPreferenceChange(selectedItem)}
-                                            dropdownList={PreferenceList} type="Preference" />
-                                    </View>
-                                    <View style={{ width: ('100%'), marginBottom: 5 }}>
-                                        <Text style={UserLabel.labelinput} > Your input to Jai Husain who is standing for Liberal Democrats? </Text>
-                                        <HashedDropdown dropdownName="Select" style={UserLabel.input}
-                                            onSelect={(selectedItem, index) => OnPreferenceChange(selectedItem)}
-                                            dropdownList={PreferenceList} type="Preference" />
-                                    </View>
-                                    {showUpload && (
-                                        <View style={{ width: ('100%'), marginBottom: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                                            <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-
-                                                <>
-                                                    <LinearGradient
-                                                        colors={['#4e73df', '#4e73df']}
-                                                        useAngle={true}
-                                                        style={styles.btn}
-                                                        start={{ x: 0.7, y: 1 }}
-                                                        end={{ x: 0, y: 1 }}
-                                                    >
-                                                        <TouchableOpacity onPress={() => { clickImage() }}>
-                                                            <Text style={{ fontFamily: "InterBold", fontSize: wp('3%'), color: "#fff", marginVertical: wp('1%'), paddingHorizontal: wp("1%") }}>
-                                                                <Icon name="camera" size={wp('4%')} color={"#fff"} />
-                                                                &nbsp;&nbsp;Take Selfie</Text>
-                                                        </TouchableOpacity>
-                                                    </LinearGradient></>
-                                            </View>
-                                            <View>
-                                                {imageselected == null || imageselected == "" ?
-                                                    <Image source={require('../assets/user_profile.png')} style={{ width: 100, height: 100, resizeMode: 'contain' }} />
-                                                    :
-                                                    <Image source={{ uri: imageselected.uri }} style={{ width: 100, height: 100, resizeMode: 'contain' }} />
-                                                }
-                                            </View>
-                                        </View>
-                                    )}
-
-
-                                    <View style={{ width: ('100%'), marginBottom: 15 }}>
-                                        <>
-
-                                            <TouchableOpacity onPress={() => { SaveMember() }} disabled={disabledButton}>
-                                                <LinearGradient
-                                                    colors={['#4e73df', '#4e73df']}
-                                                    useAngle={true}
-                                                    style={styles.btn}
-                                                    start={{ x: 0.7, y: 1 }}
-                                                    end={{ x: 0, y: 1 }}
-                                                >
-
-                                                    <Text style={{ fontFamily: "InterBold", fontSize: wp('4%'), color: "#fff", marginVertical: wp('1%'), paddingHorizontal: wp("5%") }}>Submit</Text>
-
-                                                </LinearGradient>
-                                            </TouchableOpacity>
-
-                                        </>
-                                    </View>
+                                     
+                                        
                                 </ScrollView>
 
 

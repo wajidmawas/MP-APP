@@ -14,14 +14,18 @@ import { widthPercentageToDP } from "react-native-responsive-screen";
 const Cards = ({ item }) => { 
 
   const { title, amount, lastFourDigits, cardColor } = item; 
-
+  const gotoViewlist = (title) => {
+    props.navigation.replace('DrawerStack', {
+        screen: 'ViewList'
+    })
+}
   return (
-    <TouchableOpacity style={[styles.container]}>
+    <TouchableOpacity onPress={() => { gotoViewlist(item.title) }} style={[styles.container]} key={item.title}>
       <LinearGradient
         style={[styles.background]}
         colors={[cardColor, cardColor]}
       >
-        <View style={styles.wrapper}>
+        <View style={styles.wrapper} key={item.title}>
          
           <Text style={styles.title}>{title}</Text> 
           <Text style={styles.lastFourDigits}>{lastFourDigits}</Text>

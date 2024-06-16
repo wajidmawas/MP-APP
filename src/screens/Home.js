@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { View, Text, Image, Modal, TouchableOpacity, ScrollView, StatusBar, Alert, StyleSheet, RefreshControl, Linking,FlatList } from 'react-native'
+import { View, Text, Image, Modal, TouchableOpacity, ScrollView, StatusBar, Alert, StyleSheet, RefreshControl, Linking, FlatList } from 'react-native'
 
 import AuthHeader from '../components/AuthHeader';
 import Container from '../components/Container';
 import Background from '../components/Background'
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp,widthPercentageToDP } from 'react-native-responsive-screen';
 import ImageAssets from '../Global/ImageAssests';
 import * as ImagePicker from 'expo-image-picker';
-import CONSTANTS from '../Global/Constants' 
+import CONSTANTS from '../Global/Constants'
 import HashedText from '../components/HashedText';
 import Loader from '../components/Loader';
 import HashedSnackbar, { useSnackbar } from '../components/HashedSnackbar';
@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Services from '../actions/services'; 
+import Services from '../actions/services';
 import Cards from '../components/Cards';
 import { COLORS } from "../components/colors";
 const Home = (props) => {
@@ -35,32 +35,11 @@ const Home = (props) => {
     const { isActive, type, message, openSnackBar, closeSnackBar } = useSnackbar();
     const [user, setuser] = useState('');
     const [setVersion, setsetVersion] = useState(false);
-    const [meetpeople, setmeetpeople] = useState(0)
+    const [TotalRecords, setTotalRecords] = useState(0)
     const [dashboardDtls, setdashboardDtls] = useState(0)
     const [refreshing, setRefreshing] = React.useState(false);
     const [imageselected, setImage] = useState(null);
-    const CARDS_DATA = [
-        {
-          title: "Total", 
-          lastFourDigits: "6917",
-          cardColor: COLORS.yellow,
-        },
-        {
-          title: "Pending", 
-          lastFourDigits: "4552",
-          cardColor: COLORS.green,
-        },
-        {
-          title: "Active", 
-          lastFourDigits: "3227",
-          cardColor: COLORS.blue,
-        },
-        {
-            title: "Completed", 
-            lastFourDigits: "3227",
-            cardColor: COLORS.orange,
-          },
-      ];
+    const [CARDS_DATA, SETCARDS_DATA] = useState(null); 
     const notifyMessage = (msg) => {
         if (Platform.OS === 'android') {
             ToastAndroid.show(msg, ToastAndroid.SHORT)
@@ -68,63 +47,48 @@ const Home = (props) => {
             Alert.alert(msg);
         }
     }
+    const In_Cards = ({ item }) => { 
+
+        const { title, amount, lastFourDigits, cardColor } = item; 
+        
+        return (
+          <TouchableOpacity onPress={() => { gotoViewlist(item.title) }} style={[card_styles.container]} key={item.title}>
+            <LinearGradient
+              style={[card_styles.background]}
+              colors={[cardColor, cardColor]}
+            >
+              <View style={card_styles.wrapper} key={item.title}>
+               
+                <Text style={card_styles.title}>{title}</Text> 
+                <Text style={card_styles.lastFourDigits}>{lastFourDigits}</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        );
+      };
 
     useEffect(() => {
-        onLoad();
-        loadDashboardDtls();
+        onLoad(); 
     }, [])
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setTimeout(() => {
             setRefreshing(false);
-            onLoad();
-            loadDashboardDtls();
+            onLoad(); 
         }, 1000);
     }, []);
-    const loadDashboardDtls = async () => {
-        await AsyncStorage.getItem("userSession").then(async (value) => {
-            let obj = JSON.parse(value);
-            var _userObject = obj;
-            if (_userObject != undefined) {
-                var service = new Services();
-                const body = {
-                    TypeId: 100,
-                    filterId: _userObject.ID,
-                    FilterText: "1",
-                    UserId: _userObject.ID,
-                };
-                service.postData('/_getMasters', body).then(data => {
-
-                    if (data == null || data == "") {
-                        openSnackBar("Invalid request object");
-                        return false;
-                    }
-                    var resonseData = JSON.parse(data)
-
-                    if (resonseData.errorCode == -100 || resonseData.errorCode == -200) {
-                        notifyMessage(resonseData.response);
-                    }
-                    else if (resonseData.errorCode == 200) {
-                        setdashboardDtls(resonseData.response["Table"])
-
-                    }
-                });
-            }
-        })
-            .then(res => {
-                //do something else
-            });
-    }
+    
     const onLoad = async () => {
         await AsyncStorage.getItem("userSession").then(async (value) => {
             let obj = JSON.parse(value);
             var _userObject = obj;
             if (_userObject != undefined) {
-                setUserObject(_userObject) 
+                setUserObject(_userObject)
+                console.log(_userObject)
                 var service = new Services();
                 const body = {
-                    TypeId: 1,
+                    TypeId: 2,
                     filterId: _userObject.ID,
                     filterText: "",
                     UserId: _userObject.ID,
@@ -134,15 +98,36 @@ const Home = (props) => {
                     if (data == null || data == "") {
                         openSnackBar("Invalid request object");
                         return false;
-                    }
-
-                    var resonseData = JSON.parse(data)
+                    } 
+                    var resonseData = JSON.parse(data) 
                     if (resonseData.errorCode == -100) {
                         notifyMessage(resonseData.message);
                     }
                     else if (resonseData.errorCode == 200) {
-                        setuser(resonseData.response["Table"][0]);
-                        setmeetpeople(resonseData.response["Table3"][0]);
+                        setTotalRecords(resonseData.response["Table"]);
+                        setdashboardDtls(resonseData.response["Table1"]);
+                        SETCARDS_DATA([
+                            {
+                                title: "Total",
+                                lastFourDigits: resonseData.response["Table"][0]["cnt"],
+                                cardColor: COLORS.yellow,
+                            },
+                            {
+                                title: "New",
+                                lastFourDigits: resonseData.response["Table1"][0]["New"],
+                                cardColor: COLORS.green,
+                            },
+                            {
+                                title: "Assigned",
+                                lastFourDigits: resonseData.response["Table1"][0]["Assigned"],
+                                cardColor: COLORS.blue,
+                            },
+                            {
+                                title: "Completed",
+                                lastFourDigits: resonseData.response["Table1"][0]["Completed"],
+                                cardColor: COLORS.orange,
+                            },
+                        ]);
                     }
                 });
             }
@@ -155,7 +140,7 @@ const Home = (props) => {
     const CheckVersion = async () => {
         var service = new Services();
         const body = {
-            TypeId: 13,
+            TypeId: 3,
             UserId: userObject.ID,
             FilterId: userObject.State,
             FilterText: ''
@@ -169,11 +154,11 @@ const Home = (props) => {
 
             var resonseData = JSON.parse(data)
             if (resonseData.errorCode == -100) {
-                notifyMessage(resonseData.message);
+                notifyMessage(resonseData.response);
             }
             else if (resonseData.errorCode == 200) {
                 setsetVersion(false);
-                if (resonseData.response["Table"][0]["Version_no"] != "2.0") {
+                if (resonseData.response["Table"][0]["Version_no"] != "1.0") {
                     setsetVersion(true);
                 }
             }
@@ -208,89 +193,102 @@ const Home = (props) => {
             })
         }
     }
-    const gotoViewlist = () => {
+    const gotoViewlist = (title) => {  
         props.navigation.replace('DrawerStack', {
-            screen: 'ViewList'})
+            screen: 'ViewList',
+            params: { screenName: title }
+        })
+    }
+    const newPetition = () => {
+        props.navigation.replace('DrawerStack', {
+            screen: 'AddMember'
+        })
     }
     return (
 
 
-        <Container> 
+        <Container>
             <View style={styles.StatusBar}>
                 <StatusBar translucent barStyle="dark-content" />
             </View>
             <View style={{ width: wp("100%"), height: hp('4%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <TouchableOpacity onPress={() => { props.navigation.openDrawer() }} style={{ flexDirection: "row", alignItems: "center", }}>
                     <Icon name='menu' size={wp('8%')} color={'#000'}></Icon>
-                </TouchableOpacity> 
+                </TouchableOpacity>
             </View>
             <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#000" />}>
                 <View style={styles.Container2}>
                     <HashedSnackbar visible={isActive} message={message} type={type} close={closeSnackBar} />
-                    
 
-                    {viewHide == 0 ?
 
-                        <View style={UserLabel.play_div}>
 
-                            <View style={{ marginVertical: hp('1%'), flexDirection: 'row', alignItems: 'center', textAlign: 'left', justifyContent: 'flex-start' }}>
+
+                    <View style={UserLabel.play_div}>
+
+                        <View style={{ marginVertical: hp('1%'), flexDirection: 'row', alignItems: 'center', textAlign: 'left', justifyContent: 'flex-start' }}>
                             <Image
-                        source={ImageAssets.logo} style={UserLabel.profile} />
-                        <View style={{ marginVertical: hp('1%'), flexDirection: 'column', alignItems: 'flex-start',marginLeft:wp('3%'), textAlign: 'left', justifyContent: 'flex-start' }}>
+                                source={ImageAssets.logo} style={UserLabel.profile} />
+                            <View style={{ marginVertical: hp('1%'), flexDirection: 'column', alignItems: 'flex-start', marginLeft: wp('3%'), textAlign: 'left', justifyContent: 'flex-start' }}>
                                 <Text style={UserLabel.lblUser_lbl} ellipsizeMode='tail' numberOfLines={1}>{userObject.NAME}</Text>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('3.5%'),color:'#adadad'}]} ellipsizeMode='tail' numberOfLines={1}>Location</Text>
+                                <Text style={[UserLabel.lblUser_lbl, { fontSize: wp('3.5%'), color: '#adadad' }]} ellipsizeMode='tail' numberOfLines={1}>{userObject.SPA}</Text>
                             </View>
-                            </View>
+                        </View>
 
-                            <View style={{ width:'100%', marginVertical: hp('5%'), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                           <TouchableOpacity onPress={gotoViewlist}>
-                            <View style={{ flexDirection: 'column',width:'33%',  }}>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('4%')}]} ellipsizeMode='tail' numberOfLines={1}>Assembly</Text>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('3.5%'),color:'#adadad',marginTop:10}]} ellipsizeMode='tail' numberOfLines={1}>Location</Text>
-                            </View>
-                            </TouchableOpacity>
-                            <View style={{ flexDirection: 'column',width:'33%' }}>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('4%')}]} ellipsizeMode='tail' numberOfLines={1}>Mandal</Text>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('3.5%'),color:'#adadad',marginTop:10}]} ellipsizeMode='tail' numberOfLines={1}>Location</Text>
-                            </View>
-                            <View style={{ flexDirection: 'column',width:'33%' }}>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('4%')}]} ellipsizeMode='tail' numberOfLines={1}>Village</Text>
-                                <Text style={[UserLabel.lblUser_lbl,{fontSize:wp('3.5%'),color:'#adadad',marginTop:10}]} ellipsizeMode='tail' numberOfLines={1}>Location</Text>
-                            </View>
-                            </View>
-
-                            <View style={[styles.voters_div]}>
-                                <Image style={styles.ann_img} source={require('../assets/announcement.png')}/>
-                                 
-                                <View style={{width:wp('50%'),flexDirection:"column",alignItems:'flex-start',paddingLeft:wp('5%')}}>
-                                    <View style={{backgroundColor:"#deefff",marginBottom:hp('4%'),borderRadius:15,paddingVertical:5,paddingHorizontal:15}}>
-                                        <Text style={{color:'#5592d9',fontSize:wp('4%')}}>Announcements</Text>
-                                    </View>
-
-                                    <Text style={{color:'#383838',fontSize:wp('8%'),fontFamily:'InterRegular'}}>Today's Challenge</Text>
+                        {/* <View style={{ width: '100%', marginVertical: hp('5%'), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <TouchableOpacity >
+                                <View style={{ flexDirection: 'column', width: '100%', }}>
+                                    <Text style={[UserLabel.lblUser_lbl, { fontSize: wp('4%') }]} ellipsizeMode='tail' numberOfLines={1}>Mandal/Town/Municipality</Text>
+                                    <Text style={[UserLabel.lblUser_lbl, { fontSize: wp('3.5%'), color: '#adadad', marginTop: 10 }]} ellipsizeMode='tail' numberOfLines={1}>{userObject.SPA}</Text>
                                 </View>
+                            </TouchableOpacity>
+                           
+                        </View> */}
+
+                        <View style={[styles.voters_div]}>
+                            <Image style={styles.ann_img} source={require('../assets/announcement.png')} />
+
+                            <View style={{ width: wp('50%'), flexDirection: "column", alignItems: 'flex-start', paddingLeft: wp('5%') }}>
+                                <View style={{ backgroundColor: "#deefff", marginBottom: hp('4%'), borderRadius: 15, paddingVertical: 5, paddingHorizontal: 15 }}>
+                                    <Text style={{ color: '#5592d9', fontSize: wp('4%') }}>Announcements</Text>
+                                </View>
+
+                                <Text style={{ color: '#383838', fontSize: wp('8%'), fontFamily: 'InterRegular' }}>Today's Challenge</Text>
                             </View>
-                        
-                        <View style={{marginVertical:hp('2%'),width:'100%'}}>
-                            <Text style={{color:'#383838',fontFamily:'InterBold',fontSize:wp('6%'),marginVertical:hp('2%')}}>Ticket Status</Text>
-                        <FlatList
-            style={styles.cardsWrapper}
-            data={CARDS_DATA}
-            renderItem={Cards}
-            horizontal={true}
-            keyExtractor={(item) => item.lastFourDigits}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingRight: 20 }}
-          />
-                        </View>
                         </View>
 
+                        <View style={{ marginVertical: hp('2%'), width: '100%' }}>
+                            <Text style={{ color: '#383838', fontFamily: 'InterBold', fontSize: wp('6%'), marginVertical: hp('2%') }}>Petition Status</Text>
+                            <FlatList
+                                style={styles.cardsWrapper}
+                                data={CARDS_DATA}
+                                renderItem={In_Cards}
+                                horizontal={true}
+                                keyExtractor={(item) => item.title}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{ paddingRight: 20 }}
+                            />
+                        </View>
 
-                        : <View></View>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', textAlign:'center',alignItems:'center',justifyContent:'space-between',  marginTop: 20, paddingHorizontal: wp('2%') }}>
+
+                            <TouchableOpacity style={{   marginBottom: 10, backgroundColor: '#faab3b' }} 
+                            onPress={() => { newPetition() }} >
+                                <Button
+                                    style={styles.button_submit}
+                                    name="Submit"
+                                >
+                                  <Icon name='plus' size={wp('6%')} color={'#fff'}></Icon> 
+                                  <Text>
+                                     New Petition </Text>
+                                </Button>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
 
 
-                    }
+
 
 
 
@@ -309,10 +307,10 @@ const Home = (props) => {
 export default Home
 
 const styles = StyleSheet.create({
-    cardsWrapper: { 
+    cardsWrapper: {
         maxHeight: 170,
         minHeight: 170,
-      },
+    },
     edit: {
         borderRadius: 50,
         backgroundColor: "#17B0E8",
@@ -365,12 +363,12 @@ const styles = StyleSheet.create({
     },
     voters_div: {
         flexDirection: 'row',
-        flexWrap: 'wrap',  
+        flexWrap: 'wrap',
         width: '100%',
         paddingVertical: hp('2%'),
         marginTop: hp('1%'),
         backgroundColor: "#fff",
-        height:250,
+        height: 250,
         shadowColor: '#888',
         shadowOffset: {
             width: 0,
@@ -380,21 +378,21 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 14,
     },
-    ann_img:{
-        position:'absolute',
-        right:0,
-        top:0,
-        width:('50%'),
-        height:250,
-        resizeMode:'contain'
+    ann_img: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        width: ('50%'),
+        height: 250,
+        resizeMode: 'contain'
     },
     Container2: {
         zIndex: 0,
         paddingTop: hp('2%'),
         alignContent: 'flex-start',
         alignSelf: 'flex-start',
-        width: ('100%'), 
-        paddingHorizontal:wp('2%')
+        width: ('100%'),
+        paddingHorizontal: wp('2%')
     },
     button_submit_2: {
         width: wp("70%"),
@@ -416,7 +414,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent'
     },
     button_submit: {
-        width: wp('40%'),
+        width: wp('60%'),
         height: hp('7%'),
         marginHorizontal: wp('0.2%'),
         borderWidth: 3,
@@ -559,7 +557,7 @@ const UserLabel = StyleSheet.create({
         paddingVertical: hp('3%'),
         paddingHorizontal: wp('3%'),
         borderRadius: 25,
-        
+
     },
     lblView1: {
         fontSize: wp("4%"),
@@ -585,7 +583,7 @@ const UserLabel = StyleSheet.create({
         width: wp('15%'),
         height: wp('15%'),
         borderRadius: 100,
-        resizeMode: 'contain', 
+        resizeMode: 'contain',
         marginTop: hp('1%')
     },
     label_bot_div: {
@@ -601,7 +599,7 @@ const UserLabel = StyleSheet.create({
         alignContent: 'flex-start',
         alignItems: 'flex-start',
         paddingHorizontal: 5,
-        
+
         paddingBottom: 100,
     },
     label_bot_div1: {
@@ -736,6 +734,44 @@ const UserLabel = StyleSheet.create({
 })
 
 
+const card_styles = StyleSheet.create({
+    container: {
+      marginLeft: 20,
+      width: 150,
+      borderRadius: 10,
+      shadowColor: '#888',
+      shadowOffset: {
+          width: 0,
+          height: 4,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 14, 
+    },
+    background: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      top: 0,
+      borderRadius: 10, 
+      padding:10
+    },  
+    title: {
+      marginTop: 0,
+      fontSize:widthPercentageToDP('5%'),
+      color:'#fff',
+      fontFamily:'InterBold'
+    }, 
+    lastFourDigits: {
+      marginTop: 26,
+      paddingBottom: 10,
+      textAlign:'right',
+      fontSize:widthPercentageToDP('4%'),
+      color:'#fff',
+      fontFamily:'InterBold'
+    },
+  });
+  
 const ButtonView = StyleSheet.create({
 
 
@@ -776,7 +812,7 @@ const ButtonView = StyleSheet.create({
         marginTop: hp('3%'),
         marginLeft: wp('5%'),
         flexDirection: 'column',
-        borderRadius: wp('5%'), 
+        borderRadius: wp('5%'),
         marginBottom: hp('1%'),
         alignSelf: 'flex-start',
         paddingBottom: hp('3%')
@@ -788,7 +824,7 @@ const ButtonView = StyleSheet.create({
         marginLeft: wp('9%'),
         flexDirection: 'column',
         borderRadius: wp('5%'),
-        
+
         alignSelf: 'flex-start',
         paddingBottom: hp('3%')
     },
