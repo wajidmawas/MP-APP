@@ -336,8 +336,8 @@ const onRecordingStatusUpdate =async(e)=>{
       </View>
       <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center" }}>
-        <Icon name='chevron-left' size={wp('6%')} color={'black'}></Icon>
-        <Text style={{ fontSize: wp('5%'), color: "black" }}>Back</Text>
+        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
+        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
         <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
@@ -353,8 +353,8 @@ const onRecordingStatusUpdate =async(e)=>{
                 <View style={styles.play_div}>
                   
                   <> 
-                    <View style={{ width: wp('90%'),alignContent:'center', marginVertical: wp("2%"),    flexDirection: "column" }}>
-                    <Text style={styles.labelinput} >Title</Text>
+                    <View style={{ width: ('100%'),alignContent:'center',flexDirection: "column" }}>
+                    
                       <TextInput
                         theme={{ colors: { primary: 'transparent', text: "#00445D" } }}
                         underlineColor="transparent"
@@ -371,8 +371,8 @@ const onRecordingStatusUpdate =async(e)=>{
                         errorText={PTitle.error}
                       />
                     </View>
-                    <View style={{ width: wp('90%'), marginVertical: wp("1%"),  flexDirection: "column" }}>
-                    <Text style={styles.labelinput} >Summary</Text>
+                    <View style={{ width: ('100%'), marginVertical: wp("1%"),  flexDirection: "column" }}>
+                   
                       <TextInput
                         theme={{ colors: { primary: 'transparent', text: "#00445D" } }}
                         underlineColor="transparent"
@@ -388,33 +388,31 @@ const onRecordingStatusUpdate =async(e)=>{
                         errorText={PDesc.error}
                       />
                     </View>
-                    <View style={{ width: wp('90%'), marginVertical: wp("1%"),   flexDirection: "column" }}>
-                    <Text style={styles.labelinput} >Department</Text>
+                    <View style={{ width: ('100%'), marginVertical: wp("1%"),   flexDirection: "column" }}>
+                     
                     <HashedDropdown dropdownName="Select" style={styles.input}
                                             onSelect={(selectedItem, index) => setDeptSelected(selectedItem)}
                                             dropdownList={DeptList} type="Dept" />
                     </View>
 
-                    <View style={{flexDirection:'column', width: wp('90%'), marginVertical: wp("1%"),marginTop:wp('30%')}}>
+                    <View style={{flexDirection:'column', width: ('100%'),alignItems:'center', marginVertical: wp("1%"),marginTop:wp('30%')}}>
                     
                     {AttachmentPath == null || AttachmentPath.fileName == '' &&
-                    <TouchableOpacity style={{width:'50%',backgroundColor:'#faab3b'}} onPress={() => { pickImage() }} >
-                  <Button
-                    style={styles.button_submit}
-                    name="Submit"
-                  >
-                    <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  Upload Photos
-                  </Button>
+                    <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
+                   
+                    <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  
+                    <Text style={styles.button_submit_txt}>Upload Photos</Text>
+                  
                   </TouchableOpacity>
                   }
                   
 {AudioPath == null || AudioPath.fileName == '' &&
-                  <TouchableOpacity style={{width:'50%'}}
+                  <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#2fc75c'}]}
                                                     onPress={recording ? stopRecording : startRecording}
                                                 >
                                                     <View style={styles.audiobtn}>
-                                                        <Image source={ImageAssets.audio} style={styles.audio_icon} />
-                                                        <Text style={styles.audioText}>
+                                                        <Icon name='google-podcast' size={wp('6%')} color={'#fff'}></Icon>  
+                                                        <Text style={styles.button_submit_txt}>
                                                            {recording ? 'STOP RECORDING' : 'RECORD AUDIO'} </Text>
                                                     </View>
                                                 </TouchableOpacity>
@@ -430,13 +428,13 @@ const onRecordingStatusUpdate =async(e)=>{
                                             <View style={styles.grid_title}>
                                                 <Text style={styles.grid_title_text}>Attachment</Text></View>
                                             <View style={styles.grid_2}>
-                                                <Image source={ImageAssets.attachment} style={styles.attach_file_icon} />
+                                            <Icon name='attachment' size={wp('6%')} color={'#ff7900'}></Icon>
                                                 <Text style={styles.attach_file} ellipsizeMode='tail' numberOfLines={1} >
                                                     {AttachmentPath != null && AttachmentPath.fileName != null ? AttachmentPath.fileName : ""}
 
                                                 </Text>
                                                 <TouchableOpacity style={styles.attach_file_icon} onPress={() => { deleteAttachment(1) }}>
-                                                    <Image source={ImageAssets.delete} style={styles.delete_icon} />
+                                                <Icon name='delete-circle' size={wp('6%')} color={'#d95554'}></Icon>
                                                 </TouchableOpacity>
                                             </View></>
                                     }
@@ -448,9 +446,9 @@ const onRecordingStatusUpdate =async(e)=>{
                                                 <TouchableOpacity onPress={() => { playSound() }}>
                                                     {playingStatus.playingStatus==null || playingStatus.playingStatus=="" || playingStatus.playingStatus=="Paused"  || 
                                                    Duration.TotalDuration==Duration.PlayingDuration ?
-                                                    <Image source={ImageAssets.play_icon} style={styles.attach_audio_icon} />
+                                                    <Icon name='play-circle' size={wp('6%')} color={'#ff7900'}></Icon>
                                                     : playingStatus.playingStatus!=null && playingStatus.playingStatus=="Playing"  &&  Duration.TotalDuration!=Duration.PlayingDuration?
-                                                    <Image source={ImageAssets.pause_icon} style={styles.attach_audio_icon} /> : <></>
+                                                    <Icon name='pause-circle' size={wp('6%')} color={'#ff7900'}></Icon>: <></>
                                                      }
                                                       
                                                 </TouchableOpacity>
@@ -464,17 +462,17 @@ const onRecordingStatusUpdate =async(e)=>{
                                                     <Text style={styles.attach_audio_duration}>{Duration.TotalDuration + " : " + Duration.PlayingDuration}</Text>
                                                 }
                                                 <TouchableOpacity style={styles.attach_file_icon} onPress={() => { deleteAttachment(0) }}>
-                                                    <Image source={ImageAssets.delete} style={styles.delete_icon} />
+                                                <Icon name='delete-circle' size={wp('6%')} color={'#d95554'}></Icon>
                                                 </TouchableOpacity>
                                             </View></>
                                     }
-                   <TouchableOpacity style={{width:'100%' ,alignItems:'center' }}
+                   <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#5592d9'}]}
                    onPress={() => { SavePetition() }} 
-                                                >
-                                                    <View style={styles.submit_button}> 
-                                                       <Text style={styles.audioText}>
-                                                       <Icon name='floppy' size={wp('8%')} color={'#fff'}></Icon>    Submit </Text>
-                                                    </View>
+                                                >  
+                                                <Icon name='floppy' size={wp('6%')} color={'#fff'}></Icon>
+                                                       <Text style={styles.button_submit_txt}>
+                                                           Submit </Text>
+                                                     
                                                 </TouchableOpacity>
                   
                     </View>
@@ -502,12 +500,12 @@ const styles = StyleSheet.create({
   play_div: {
     width: ('100%'),
     flexDirection: 'column', 
-    alignItems: 'center',
-    backgroundColor: "#fff",
-    marginTop: hp('3%'),
+    alignItems: 'center', 
+    backgroundColor: "#fff", 
     height: hp('100%'),
     borderRadius: 10,
-    paddingTop:20
+    paddingTop:20,
+    paddingHorizontal:wp('2%')
 },
   login_bg: {
     width: wp('100%'),
@@ -537,7 +535,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: hp('100%'),
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal:wp('2%'), 
   },
   login_image: {
     width: wp("80%"),
@@ -619,18 +617,18 @@ const styles = StyleSheet.create({
 
   },
  
-    input: { 
-      borderTopWidth: 0,
-      borderLeftWidth: 0,
-      borderRightWidth: 0,
-      borderBottomWidth:0,
-      paddingHorizontal: wp('2%'),  
-      width: ('100%'), 
-      color:'#333',  
-      backgroundColor: 'transparent',
-      fontFamily:"InterRegular",
-      fontSize: wp('4%'), 
-    },
+  input: {
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth:0,
+    paddingHorizontal: wp('2%'),  
+    width: '100%', 
+    color:'#333',  
+    backgroundColor: 'transparent',
+    fontFamily:"InterRegular",
+    fontSize: wp('4%'), 
+},
  
   link: {
     fontWeight: 'bold',
@@ -644,10 +642,7 @@ const styles = StyleSheet.create({
     }),
 
   },
-  audiobtn: {
-    width: 160,
-    height: 48,
-    marginTop: 20,
+  audiobtn: { 
     paddingRight: 10,
     backgroundColor: '#2fc75c', 
     alignContent: 'center',
@@ -669,8 +664,8 @@ submit_button: {
   display: 'flex',
 },
 waveImage_icon: {
-  height: 45,
-  width: 80,
+  height: 25,
+  width: 50,
   ...Platform.select({
 
       android: {
@@ -695,6 +690,7 @@ waveImage: {
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'row',
+  marginBottom:20,
   display: 'flex',  
   ...Platform.select({
 
@@ -718,12 +714,14 @@ grid_2: {
   backgroundColor: '#fff', 
   alignItems: 'center',
   borderRadius: 30,
+  marginBottom:20,
   justifyContent: 'space-between',
 },
 grid_title: {
   display: 'flex',  
   borderRadius: 50,
-  margin: 'auto',
+  marginBottom: 20,
+
 },
 grid_title_text: {
   color: '#d95554',
@@ -773,12 +771,21 @@ attach_file_icon: {
   height: 32,
   left: 10
 },
-  button_submit: {
-    width: wp('100%'),
-    color: '#409fbf',
-    fontSize: wp("3%"),
-    backgroundColor: 'transparent',
-  },
+button_submit: {
+  width: wp('90%'),
+  height: hp('7%'), 
+  borderRadius: 10,
+  marginBottom:hp('1%'),
+  flexDirection:'row',
+  alignItems:'center',
+  justifyContent:'center',
+  backgroundColor:'#5592d9'
+},
+button_submit_txt:{
+  fontSize:wp('4%'),
+  color:"#fff",
+  marginLeft:5
+},
   btn: {
     width: wp('70%'),
     borderRadius: 50,

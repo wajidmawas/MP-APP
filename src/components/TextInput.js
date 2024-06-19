@@ -23,7 +23,7 @@ export default function TextInput1({ errorText, description, ...props }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '94%',
+    width: '100%',
     marginVertical: 5, 
     fontSize:widthPercentageToDP("3%"),
     ...Platform.select({

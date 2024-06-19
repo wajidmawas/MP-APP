@@ -1,3 +1,6 @@
 {
-  "urlRandomness": "orkS5Vo"
+  "urlRandomness": "orkS5Vo",
+  "dev": true,
+  "minify": false,
+  "https": false
 }

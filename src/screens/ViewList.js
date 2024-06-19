@@ -24,6 +24,7 @@ import * as FileSystem from 'expo-file-system';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { color } from 'react-native-reanimated';
+import StepIndicator from 'react-native-step-indicator';
 const ViewList = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
@@ -64,6 +65,9 @@ const ViewList = (props) => {
     const [PetitionList, setPetitionList] = React.useState("")    
     const isMobile = ["ఉంది", "లేదు"]
     const [imageselected, setImage] = useState(null);
+    const [currentPage, setCurrentPage] = React.useState(0);
+    const [currentPosition, setcurrentPosition] = React.useState(0);
+    
     const clickImage = async () => {
 
         try {
@@ -83,6 +87,31 @@ const ViewList = (props) => {
         }
 
     }
+    const labels = ["Cart","Delivery Address","Order Summary","Payment Method","Track"];
+    const customStyles = {
+        stepIndicatorSize: 30,
+        currentStepIndicatorSize: 40,
+        separatorStrokeWidth: 3,
+        currentStepStrokeWidth: 5,
+        stepStrokeCurrentColor: '#5592d9',
+        separatorFinishedColor: '#5592d9',
+        separatorUnFinishedColor: '#aaaaaa',
+        stepIndicatorFinishedColor: '#5592d9',
+        stepIndicatorUnFinishedColor: '#aaaaaa',
+        stepIndicatorCurrentColor: '#ffffff',
+        stepIndicatorLabelFontSize: 15,
+        currentStepIndicatorLabelFontSize: 15,
+        stepIndicatorLabelCurrentColor: '#000000',
+        stepIndicatorLabelFinishedColor: '#ffffff',
+        stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
+        labelColor: '#666666',
+        labelSize: 15,
+        labelAlign:'left',
+        currentStepLabelColor: '#5592d9',
+      }
+       
+       
+      
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -231,9 +260,19 @@ const ViewList = (props) => {
         editdetails(item, 0);
         setMobileNo({ value: item.Mobile })
     }
-    
+    const showdetails = () => { 
+            setModalVisible(true)
+    }
     const addmember = () =>{
         props.navigation.replace('DrawerStack', { screen: 'AddMember' })
+    }
+    const constructor = () => {
+        this.state = {
+            currentPosition: 0
+        }
+    }
+    const onPageChange = (position) => {
+        this.setState({currentPosition: position});
     }
     return (
 
@@ -254,8 +293,8 @@ const ViewList = (props) => {
                 <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
 
                     <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
-                        <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
+                        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
                         <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
@@ -269,8 +308,9 @@ const ViewList = (props) => {
                     <View >
                         <View style={styles.top_div_lbl}>
                             <Text style={{ fontSize: wp('8%'), color: '#fff', fontFamily: 'InterBold' }}>16</Text>
-                            <TouchableOpacity onPress={addmember} style={{ backgroundColor: '#fff', borderRadius: 10, paddingVertical: 10, paddingHorizontal: wp('5%') }}>
-                                <Text style={{ fontSize: wp('4%'), color: '#5592d9', fontFamily: 'InterBold' }}>Add</Text>
+                            <TouchableOpacity onPress={addmember} style={{ backgroundColor: '#fff', borderRadius: 10, paddingVertical: 10,flexDirection:"row",alignItems:'center', paddingHorizontal: wp('5%') }}>
+                            <Icon name='plus' size={wp('6%')} color={'#5592d9'}></Icon>   
+                            <Text style={{ fontSize: wp('4%'), color: '#5592d9', fontFamily: 'InterBold' }}>Add</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -287,26 +327,26 @@ const ViewList = (props) => {
   <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
        
-      <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
-      <Text style={{ fontSize: wp('5%'), color: "#383838", fontFamily: "InterBold" }}>{item.title}</Text>
-      <Text style={{ fontSize: wp('3.5%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.description}</Text>
+      <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'100%' }}>
+      <Text style={{ fontSize: wp('4.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.title}</Text>
+      <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.description}</Text>
   </View>
   </View> 
   <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
 
 <View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
-<View style={{ flexDirection: "row",alignItems:'center' }}> 
-<Text  style={{ marginLeft:wp('2%'),color: "#faab3b", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>{item.status}</Text>
+<View style={{ flexDirection: "row",alignItems:'center',width:'33%' }}> 
+<Text  style={{ color: "#faab3b", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>{item.status}</Text>
 </View> 
-<View style={{ flexDirection: "row",alignItems:'center' }}> 
-<TouchableOpacity onPress={() => { props.navigation.openDrawer() }} style={{ flexDirection: "row", alignItems: "center", }}>
+<View style={{ flexDirection: "row",alignItems:'center',width:'23%' }}> 
+<TouchableOpacity onPress={() => { showdetails() }} style={{ flexDirection: "row", alignItems: "center", }}>
 <Icon name='eye' size={wp('4%')} color={'#5592d9'}></Icon>
 <Text  style={{ marginLeft:wp('2%'),color: "#000", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>View</Text>
  </TouchableOpacity>
 
 </View> 
-<View style={{ flexDirection: "row",alignItems:'center' }}>
+<View style={{ flexDirection: "row",alignItems:'center',width:'43%' }}>
 <Icon name='clock' size={wp('4%')} color={'#5592d9'}></Icon>
 <Text style={{ marginLeft:wp('2%'),fontSize: wp('3.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.format_date}</Text>
 </View>
@@ -336,48 +376,41 @@ const ViewList = (props) => {
                     <View style={styles.centeredView}>
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <View style={styles.modalView}>
-                                <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('90%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
-                                    <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>Voter Details</Text>
+                                <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('100%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
+                                    <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>Test Title</Text>
                                     <TouchableOpacity style={{ backgroundColor: "#ccc" }} onPress={() => { closemodal() }} >
                                         <Icon name="close" size={wp('6%')} color={"#000"} />
                                     </TouchableOpacity>
                                 </View>
 
-                                <ScrollView style={{ flexGrow: 1 }}>
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-
-                                        <View style={{ width: ('50%'), marginBottom: 10 }}>
-                                            <Text style={UserLabel.labelinput} >Voter:</Text>
-                                            <Text style={styles.labelinput1} >{EName} </Text>
-                                        </View>
-                                        <View style={{ width: ('50%'), marginBottom: 10 }}>
-                                            <Text style={UserLabel.labelinput} >Relative Name:</Text>
-                                            <Text style={styles.labelinput1} >{REName}</Text>
-                                        </View>
-                                        <View style={{ width: ('50%'), marginBottom: 10 }}>
-                                            <Text style={UserLabel.labelinput} >Seqno:</Text>
-                                            <Text style={styles.labelinput1} >{SeqNo}</Text>
-                                        </View>
-                                        <View style={{ width: ('50%'), marginBottom: 10 }}>
-                                            <Text style={UserLabel.labelinput} >Age:</Text>
-                                            <Text style={styles.labelinput1} >{Age}</Text>
-                                        </View>
-                                        <View style={{ width: ('50%'), marginBottom: 10 }}>
-                                            <Text style={UserLabel.labelinput} >Address:</Text>
-                                            <Text style={styles.labelinput1} >{HNO}</Text>
-                                        </View>
-                                        <View style={{ width: ('50%'), marginBottom: 10 }}>
-                                            <Text style={UserLabel.labelinput} >Epic No:</Text>
-                                            <Text style={styles.labelinput1} >{EpicNo}</Text>
-                                        </View>
-                                    </View>
-
+                                <ScrollView style={{ width: '100%' }}> 
+                                    <View style={{width:'100%',height:300,alignItems:'flex-start',marginBottom:hp('2%')}}>
+                                <StepIndicator
+          customStyles={customStyles}
+          stepCount={6}
+          direction="vertical"
+          currentPosition={currentPage}
+          labels={labels} 
+        />
+        </View>
 
                                     <View style={{ width: ('100%'), marginBottom: 15 }}>
-                                        <Text style={UserLabel.labelinput} >Mobile
-
-                                        </Text>
-                                        <TextInput1 theme={{ colors: { primary: "transparent" } }}
+                                       
+                                        <TextInput theme={{ colors: { primary: "transparent" } }}
+                                            underlineColor="transparent"
+                                            returnKeyType="next"
+                                            keyboardType='numeric'
+                                            placeholder="Enter your Mobile Number"
+                                            value={MobileNo.value}
+                                            style={styles.input}
+                                            selectionColor={'#000'}
+                                            onChangeText={(text) => setMobileNo({ value: text })}
+                                        />
+                                         
+                                    </View>
+                                    <View style={{ width: ('100%'), marginBottom: 15 }}>
+                                       
+                                        <TextInput theme={{ colors: { primary: "transparent" } }}
                                             underlineColor="transparent"
                                             returnKeyType="next"
                                             keyboardType='numeric'
@@ -390,7 +423,17 @@ const ViewList = (props) => {
                                          
                                     </View>
                                      
-                                        
+                                    <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  marginTop: 0, paddingHorizontal: wp('2%') }}>
+
+<TouchableOpacity style={styles.button_submit} 
+onPress={() => { newPetition() }} > 
+       
+      <Text style={styles.button_submit_txt}>
+         Subimt </Text>
+     
+</TouchableOpacity>
+
+</View>
                                 </ScrollView>
 
 
@@ -399,89 +442,7 @@ const ViewList = (props) => {
                     </View>
                 </Modal>
 
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={saveConfirmation}
-                    onRequestClose={() => {
-                        setsaveConfirmation(!saveConfirmation);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('90%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
-                                <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>Survey Submitted</Text>
-                                <TouchableOpacity style={{ backgroundColor: "#ccc" }} onPress={() => { setsaveConfirmation(!saveConfirmation) }} >
-                                    <Icon name="close" size={wp('6%')} color={"#000"} />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{ width: wp('90%'), flexDirection: "column" }}>
-                                <View style={{ marginVertical: hp('3%'), flexDirection: 'column', alignItems: 'center', textAlign: 'left', justifyContent: 'flex-start' }}>
-                                    <TouchableOpacity onPress={() => { OpenWhatsApp() }} style={{ paddingHorizontal: wp('1%'), flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: '#4e73df', color: '#25D366', height: 50, borderRadius: 40, paddingHorizontal: wp("4%"), fontSize: wp('2%') }}>
-                                        <Icon name="whatsapp" size={wp('6%')} color={"#25D366"} />
-                                        <Text style={{ fontSize: wp('3.5%'), color: '#fff', marginLeft: wp('1%') }} numberOfLines={2}>Click to whatsapp Congress Guarantee to Voter.</Text>
-
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity onPress={() => { go2Home() }} style={{ paddingHorizontal: wp('1%'), flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: '#001335', marginTop: hp('2%'), height: 50, borderRadius: 40, paddingHorizontal: wp("4%") }}>
-                                        <Icon name="close" size={wp('6%')} color={"#fff"} />
-                                        <Text style={{ fontSize: wp('3.5%'), color: '#fff', marginLeft: wp('1%') }} numberOfLines={2}>Go to the next record without sending a guarantee card.</Text>
-
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={ResendMsg}
-                    onRequestClose={() => {
-                        setResendMsg(!ResendMsg);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('90%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
-                                <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>Send WhatsUp Message</Text>
-                                <TouchableOpacity style={{ backgroundColor: "#ccc" }} onPress={() => { setResendMsg(!ResendMsg) }} >
-                                    <Icon name="close" size={wp('6%')} color={"#000"} />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{ width: ('100%'), marginBottom: 5 }}>
-                                <Text style={UserLabel.labelinput} >మొబైల్
-
-                                </Text>
-                                <TextInput1 theme={{ colors: { primary: "transparent" } }}
-                                    underlineColor="transparent"
-                                    returnKeyType="next"
-                                    keyboardType='numeric'
-                                    placeholder="Enter your Mobile Number"
-                                    value={RMobileNo.value}
-                                    style={styles.input}
-                                    selectionColor={'#000'}
-                                    selection={{ start: 0 }}
-                                    onChangeText={(text) => setRMobileNo({ value: text })}
-                                />
-
-                            </View>
-                            <View style={{ width: wp('90%'), flexDirection: "column" }}>
-                                <View style={{ marginVertical: hp('3%'), flexDirection: 'column', alignItems: 'center', textAlign: 'left', justifyContent: 'flex-start' }}>
-                                    <TouchableOpacity onPress={() => { OpenWhatsApp() }} style={{ paddingHorizontal: wp('1%'), flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: '#4e73df', color: '#25D366', height: 50, borderRadius: 40, paddingHorizontal: wp("4%"), fontSize: wp('2%') }}>
-                                        <Icon name="whatsapp" size={wp('6%')} color={"#25D366"} />
-                                        <Text style={{ fontSize: wp('3.5%'), color: '#fff', marginLeft: wp('1%') }} numberOfLines={2}>Click to Send Congress Guarantee to Voter.</Text>
-
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity onPress={() => { setResendMsg(false) }} style={{ paddingHorizontal: wp('1%'), flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: '#001335', marginTop: hp('2%'), height: 50, borderRadius: 40, paddingHorizontal: wp("4%") }}>
-                                        <Icon name="close" size={wp('6%')} color={"#fff"} />
-                                        <Text style={{ fontSize: wp('3.5%'), color: '#fff', marginLeft: wp('1%') }} numberOfLines={2}>Close</Text>
-
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
+                
             </>
             <View style={styles.login_bg}>
                 <Image style={{ width: '100%', resizeMode: 'cover', height: ('100%') }} source={require('../assets/main_bg.png')} />
@@ -494,6 +455,10 @@ const ViewList = (props) => {
 export default ViewList
 
 const styles = StyleSheet.create({
+    stepIndicator: {
+        marginVertical: 50,
+        paddingHorizontal: 20,
+      },
     login_bg: {
         width: wp('100%'),
         position: 'absolute',
@@ -536,14 +501,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.6)'
     },
     modalView: {
-        margin: 20,
+       
         paddingTop: hp('6%'),
         width: wp('95%'),
         backgroundColor: "white",
         borderRadius: 20,
-        padding: ('4%'),
-        alignItems: "center",
-        justifyContent: 'center',
+        padding: ('4%'), 
+        justifyContent: 'flex-start',
     },
     loading_image: {
         width: 100,
@@ -557,6 +521,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: hp('1%'),
         paddingVertical: hp('1%'),
+        marginBottom:hp('1%'),
         borderRadius: 10,
         backgroundColor: "#f0f3fe",
 
@@ -609,24 +574,32 @@ const styles = StyleSheet.create({
         borderTopWidth: 0,
         borderLeftWidth: 0,
         borderRightWidth: 0,
-        borderBottomWidth: 0,
-        paddingHorizontal: wp('2%'),
-        width: ('100%'),
-        color: '#fff',
+        borderBottomWidth:0,
+        paddingHorizontal: wp('2%'),  
+        width: ('100%'), 
+        color:'#333',  
         backgroundColor: 'transparent',
-        fontFamily: "InterRegular",
-        fontSize: wp('3.5%'),
+        fontFamily:"InterRegular",
+        fontSize: wp('4%'), 
     },
     StatusBar: {
         height: Constants.statusBarHeight,
         backgroundColor: 'transparent'
     },
     button_submit: {
-        width: wp('40%'),
-        height: hp('7%'),
-        marginHorizontal: wp('0.2%'),
-        borderWidth: 3,
+        width: wp('60%'),
+        height: hp('7%'), 
+        borderRadius: 10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:'#5592d9'
     },
+    button_submit_txt:{
+        fontSize:wp('4%'),
+        color:"#fff",
+        marginLeft:5
+    }
 
 })
 const UserLabel = StyleSheet.create({

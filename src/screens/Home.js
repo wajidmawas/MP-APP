@@ -270,18 +270,14 @@ const Home = (props) => {
                             />
                         </View>
 
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', textAlign:'center',alignItems:'center',justifyContent:'space-between',  marginTop: 20, paddingHorizontal: wp('2%') }}>
+                        <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  marginTop: 0, paddingHorizontal: wp('2%') }}>
 
-                            <TouchableOpacity style={{   marginBottom: 10, backgroundColor: '#faab3b' }} 
-                            onPress={() => { newPetition() }} >
-                                <Button
-                                    style={styles.button_submit}
-                                    name="Submit"
-                                >
+                            <TouchableOpacity style={styles.button_submit} 
+                            onPress={() => { newPetition() }} > 
                                   <Icon name='plus' size={wp('6%')} color={'#fff'}></Icon> 
-                                  <Text>
+                                  <Text style={styles.button_submit_txt}>
                                      New Petition </Text>
-                                </Button>
+                                 
                             </TouchableOpacity>
 
                         </View>
@@ -415,11 +411,18 @@ const styles = StyleSheet.create({
     },
     button_submit: {
         width: wp('60%'),
-        height: hp('7%'),
-        marginHorizontal: wp('0.2%'),
-        borderWidth: 3,
+        height: hp('7%'), 
+        borderRadius: 10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:'#5592d9'
     },
-
+    button_submit_txt:{
+        fontSize:wp('4%'),
+        color:"#fff",
+        marginLeft:5
+    }
 })
 const UserLabel = StyleSheet.create({
     Container2: {

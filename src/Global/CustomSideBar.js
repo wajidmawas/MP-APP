@@ -115,7 +115,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
    
         <DrawerItem {...props} style={styles.DrawerItemContainer}
             icon={({ size }) => (
-                <View style={styles.DrawerItemImageContainer}><Icon style={styles.DrawerItemImage} name={[props.icon]} color={'#00445D'} size={wp('5%')} /></View>
+                <View style={styles.DrawerItemImageContainer}><Icon style={styles.DrawerItemImage} name={[props.icon]} color={'#5592d9'} size={wp('5%')} /></View>
             )}
             label={props.label}
             labelStyle={styles.DrawerItemLabel}
@@ -161,7 +161,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
     )
     return (
         <LinearGradient
-            colors={['#7fddff', '#fff']}
+            colors={['#fff', '#fff']}
             style={styles.background}
             useAngle={true}
             start={{ x: 0.6, y: 0.35 }}
@@ -195,13 +195,13 @@ const styles = StyleSheet.create({
     background:{width:"100%"},
     Container: { height: 90, paddingLeft: wp('0%'), paddingTop: wp('5%'), width:"80%" },
     Container1: { height: hp("94%"), paddingLeft: wp('0%'), width:"100%", paddingTop: wp('5%') },
-    DrawerItemContainer: { color: '#00445D',width:"100%" }, 
+    DrawerItemContainer: { color: '#5592d9',width:"100%" }, 
     DrawerItemImageContainer: { justifyContent: "center", alignItems: "center" },
     DrawerItemImage: { position: 'absolute', left: 3,  },
-    DrawerItemLabel: { fontSize: wp("4%"), color: '#00445D', paddingLeft: wp('3%') },
+    DrawerItemLabel: { fontSize: wp("4%"), color: '#5592d9', paddingLeft: wp('3%') },
     BackButtonContainer: { justifyContent: "flex-start" },
     BackButton: { width: wp('6%'), height: wp('6%'), marginHorizontal: wp("5%"), },
     UserNameContainer: { flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: 10 },
     UserNameImage: { width: 25, height: 25, marginHorizontal: wp("5%"), position: 'absolute', left: 5, },
-    UserName: { fontSize: wp("4%"), fontWeight: "bold", color: '#00445D', paddingLeft: 30,width:"100%" }, 
+    UserName: { fontSize: wp("4%"), fontWeight: "bold", color: '#5592d9', paddingLeft: 30,width:"100%" }, 
 })

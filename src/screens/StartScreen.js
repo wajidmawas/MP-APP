@@ -302,7 +302,7 @@ export default function StartScreen({ navigation }) {
                       </View>
                     <View style={{marginTop:wp('2%'),marginBottom:wp('2%'),backgroundColor:"#fff",borderRadius:10,paddingHorizontal:10,paddingVertical:20,width:('90%') }}>
                     <Text style={styles.labelinput}>Login</Text>
-                    <View style={{ width: wp('90%')}}> 
+                    <View style={{ width: ('100%')}}> 
                         <View style={styles.inputContainer}>
                         
         <TextInput  
