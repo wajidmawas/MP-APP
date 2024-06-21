@@ -29,6 +29,7 @@ const ViewList = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
     const [modalVisible, setModalVisible] = useState(false)
+    const [Pstatus, setPstatus] = useState(false)
     const [saveConfirmation, setsaveConfirmation] = useState(false)
     const [ResendMsg, setResendMsg] = useState(false)
     const [showUpload, setshowUpload] = useState(false)
@@ -49,6 +50,7 @@ const ViewList = (props) => {
     const [REName, setREName] = React.useState("")
     const [sex, setsex] = React.useState("")
     const [Age, setAge] = React.useState("")
+    const [Comments, setComments] = useState({ value: '' })
     const [MobileNo, setMobileNo] = useState({ value: '' })
     const [RMobileNo, setRMobileNo] = useState({ value: '' })
     const [HNO, setHNO] = React.useState("")
@@ -61,13 +63,20 @@ const ViewList = (props) => {
     const [AssemblyId, setAssemblyId] = React.useState(0)
     const [fillIsmobile, setfillIsmobile] = React.useState(false)
     const [location, setLocation] = useState(null);
+    const [ModalTitle, setModalTitle] = React.useState("")
+    const [PID, setPID] = React.useState(0)
     const [AllTables, setTables] = React.useState("")
+    const [selectedStatus, setselectedStatus] = React.useState("")
+    const [selectedUser, setselectedUser] = React.useState("")
+    const [StatusList, setStatusList] = React.useState("")
+    const [UserList, setUserList] = React.useState("")
     const [PetitionList, setPetitionList] = React.useState("")    
     const isMobile = ["ఉంది", "లేదు"]
     const [imageselected, setImage] = useState(null);
     const [currentPage, setCurrentPage] = React.useState(0);
     const [currentPosition, setcurrentPosition] = React.useState(0);
-    
+    const [labels, setlabels] = React.useState(null);
+     // ["Cart","Delivery Address","Order Summary","Payment Method","Track"];
     const clickImage = async () => {
 
         try {
@@ -87,7 +96,7 @@ const ViewList = (props) => {
         }
 
     }
-    const labels = ["Cart","Delivery Address","Order Summary","Payment Method","Track"];
+    
     const customStyles = {
         stepIndicatorSize: 30,
         currentStepIndicatorSize: 40,
@@ -105,8 +114,7 @@ const ViewList = (props) => {
         stepIndicatorLabelFinishedColor: '#ffffff',
         stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
         labelColor: '#666666',
-        labelSize: 15,
-        labelAlign:'left',
+        labelSize: 15, 
         currentStepLabelColor: '#5592d9',
       }
        
@@ -223,7 +231,17 @@ const ViewList = (props) => {
                     }
                     else if (resonseData.errorCode == 200) {
                         setTables(resonseData.response)
-                        setPetitionList(resonseData.response["Table"]);  
+                        setPetitionList(resonseData.response["Table"]); 
+                        var _filteredList = [];
+                        resonseData.response["Table1"].map((myValue, myIndex) => {
+                          _filteredList.push(myValue.name);
+                        });  
+                        setStatusList(_filteredList);  
+                          _filteredList = [];
+                        resonseData.response["Table2"].map((myValue, myIndex) => {
+                          _filteredList.push(myValue.Name);
+                        });  
+                        setUserList(_filteredList);  
                     }
                 });
             }
@@ -260,8 +278,81 @@ const ViewList = (props) => {
         editdetails(item, 0);
         setMobileNo({ value: item.Mobile })
     }
-    const showdetails = () => { 
-            setModalVisible(true)
+    const showdetails = (item) => { 
+        setModalTitle(item.title);
+        setPID(item.id); setPstatus(item.status);
+        setselectedStatus("");
+            setModalVisible(true)  
+            var service = new Services();
+            const body = {
+                TypeId: 5,
+                filterId: item.id,
+                filterText: "",
+                UserId: userObject.ID, 
+            };
+             
+            service.postData('/_getMasters', body).then(data => {
+
+                if (data == null || data == "") {
+                    openSnackBar("Invalid request object");
+                    return false;
+                }
+                var resonseData = JSON.parse(data) 
+                if (resonseData.errorCode == -100) {
+                    notifyMessage(resonseData.response);
+                }
+                else if (resonseData.errorCode == 200) {
+                  
+                    var _filteredList = [];
+                    resonseData.response["Table"].map((myValue, myIndex) => {
+                      _filteredList.push(myValue.status + " ( " + myValue.format_date + " )");
+                    });
+                    setlabels(_filteredList); 
+                }
+            });
+    }
+    const SubmitStatus = () => {   
+        let userId = 0;
+    
+        if(selectedUser!=null && selectedUser!=undefined && selectedUser!="")
+        {
+        let _user = AllTables.Table2.filter(a => a.Name == selectedUser);  
+        if (_user != null) {
+            userId = _user[0].id;
+        }
+      }
+
+        if (selectedStatus === '' || selectedStatus === undefined
+            || selectedStatus === null) {
+            notifyMessage('Please select status')
+          }
+else{
+            var service = new Services();
+            const body = {
+                AssignedUser: userId,
+                Pid: PID, Comments: Comments.value,
+                Status: selectedStatus,
+                Userid: userObject.ID, 
+            };
+             
+            service.postData('/_UpdateActivity', body).then(data => {
+
+                if (data == null || data == "") {
+                    openSnackBar("Invalid request object");
+                    return false;
+                }
+                var resonseData = JSON.parse(data) 
+                if (resonseData.errorCode == -100) {
+                    notifyMessage(resonseData.response);
+                }
+                else if (resonseData.errorCode == 200) {
+                    notifyMessage("Successfully Submitted");
+                    setModalVisible(false);
+                    setComments('');
+                   
+                }
+            });
+        }
     }
     const addmember = () =>{
         props.navigation.replace('DrawerStack', { screen: 'AddMember' })
@@ -293,8 +384,8 @@ const ViewList = (props) => {
                 <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
 
                     <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
-                        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
+                        <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
                         <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
@@ -340,7 +431,7 @@ const ViewList = (props) => {
 <Text  style={{ color: "#faab3b", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>{item.status}</Text>
 </View> 
 <View style={{ flexDirection: "row",alignItems:'center',width:'23%' }}> 
-<TouchableOpacity onPress={() => { showdetails() }} style={{ flexDirection: "row", alignItems: "center", }}>
+<TouchableOpacity onPress={() => { showdetails(item) }} style={{ flexDirection: "row", alignItems: "center" }}>
 <Icon name='eye' size={wp('4%')} color={'#5592d9'}></Icon>
 <Text  style={{ marginLeft:wp('2%'),color: "#000", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>View</Text>
  </TouchableOpacity>
@@ -377,7 +468,7 @@ const ViewList = (props) => {
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <View style={styles.modalView}>
                                 <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('100%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
-                                    <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>Test Title</Text>
+                                    <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>{ModalTitle}</Text>
                                     <TouchableOpacity style={{ backgroundColor: "#ccc" }} onPress={() => { closemodal() }} >
                                         <Icon name="close" size={wp('6%')} color={"#000"} />
                                     </TouchableOpacity>
@@ -387,53 +478,57 @@ const ViewList = (props) => {
                                     <View style={{width:'100%',height:300,alignItems:'flex-start',marginBottom:hp('2%')}}>
                                 <StepIndicator
           customStyles={customStyles}
-          stepCount={6}
+          stepCount={labels==undefined?0:labels.length}
           direction="vertical"
-          currentPosition={currentPage}
+          currentPosition={labels==undefined?0:labels.length-1}
           labels={labels} 
         />
         </View>
 
-                                    <View style={{ width: ('100%'), marginBottom: 15 }}>
-                                       
-                                        <TextInput theme={{ colors: { primary: "transparent" } }}
-                                            underlineColor="transparent"
-                                            returnKeyType="next"
-                                            keyboardType='numeric'
-                                            placeholder="Enter your Mobile Number"
-                                            value={MobileNo.value}
-                                            style={styles.input}
-                                            selectionColor={'#000'}
-                                            onChangeText={(text) => setMobileNo({ value: text })}
-                                        />
+{Pstatus!="Completed" &&
+<>
+                                    <View style={{ width: ('100%'), marginBottom: 15 }}> 
+                                    <HashedDropdown dropdownName="Select" style={styles.input}
+                                            onSelect={(selectedItem, index) => setselectedStatus(selectedItem)}
+                                            dropdownList={StatusList} type="Dept" />
                                          
                                     </View>
+                                 {selectedStatus=="Assigned" &&
+
+                                   <View style={{ width: ('100%'), marginBottom: 15 }}> 
+                                    <HashedDropdown dropdownName="Select User" style={styles.input}
+                                            onSelect={(selectedItem, index) => setselectedUser(selectedItem)}
+                                            dropdownList={UserList} type="Dept" />
+                                         
+                                    </View>
+}
                                     <View style={{ width: ('100%'), marginBottom: 15 }}>
                                        
                                         <TextInput theme={{ colors: { primary: "transparent" } }}
                                             underlineColor="transparent"
-                                            returnKeyType="next"
-                                            keyboardType='numeric'
-                                            placeholder="Enter your Mobile Number"
-                                            value={MobileNo.value}
+                                            returnKeyType="next" 
+                                            placeholder="Enter Comments"
+                                            value={Comments.value}
                                             style={styles.input}
                                             selectionColor={'#000'}
-                                            onChangeText={(text) => setMobileNo({ value: text })}
+                                            onChangeText={(text) => setComments({ value: text })}
                                         />
                                          
                                     </View>
                                      
-                                    <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  marginTop: 0, paddingHorizontal: wp('2%') }}>
+                                    <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  marginTop: 0,bottom:wp('5%'), paddingHorizontal: wp('5%') }}>
 
 <TouchableOpacity style={styles.button_submit} 
-onPress={() => { newPetition() }} > 
+onPress={() => { SubmitStatus() }} > 
        
       <Text style={styles.button_submit_txt}>
-         Subimt </Text>
+         Submit </Text>
      
 </TouchableOpacity>
 
 </View>
+</>
+}
                                 </ScrollView>
 
 
@@ -592,7 +687,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'center',
+        justifyContent:'center', 
         backgroundColor:'#5592d9'
     },
     button_submit_txt:{

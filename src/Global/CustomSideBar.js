@@ -127,21 +127,10 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                         case 'Reports':
                             props.nav.navigate("Reports");
                             break;
-                        case 'Add Coodinator':
-                            props.nav.navigate("AddCoordinator");
+                        case 'New Petition':
+                            props.nav.navigate("AddMember");
                             break;
-                            case 'Assembly Wise Beneficiaries':
-                            props.nav.navigate("AssemblyWiseBeneficiaries");
-                            break;
-                            case 'My Beneficiaries':
-                                props.nav.navigate("MyBeneficiaries");
-                            break;
-                            case 'My Coordinators':
-                                props.nav.navigate("MyCoordinators");
-                            break;
-                            case 'User Wise Beneficiaries':
-                                props.nav.navigate("UserWiseBeneficiaries");
-                                break;
+                               
                     case 'Logout':
                         AsyncStorage.setItem('userSession', "")
                         props.nav.dispatch(DrawerActions.closeDrawer())
@@ -180,7 +169,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
             <View style={styles.Container1}>
                 {/* <CustomDrawerItem label='My Profile' icon="username" nav={navigation}     /> */}
                 <CustomDrawerItem label='Dashboard' icon="view-dashboard" nav={navigation} />   
-                   
+                <CustomDrawerItem label='New Petition' icon="plus" nav={navigation}  />
                 <CustomDrawerItem label='Logout' icon="logout" nav={navigation} /> 
                 <CustomDrawerItem label='Delete Account' icon="delete" nav={navigation} />
                 {/* <CustomDrawerItem label='Campaigns' icon="username" nav={navigation}  />
