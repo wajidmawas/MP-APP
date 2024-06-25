@@ -30,6 +30,8 @@ const ViewList = (props) => {
     const [storeState, dispatch] = useContext(AppContext);
     const [modalVisible, setModalVisible] = useState(false)
     const [Pstatus, setPstatus] = useState(false)
+    const [PImage, setPImage] = useState(false)
+    const [PAudioPath, setPAudioPath] = useState(false)
     const [saveConfirmation, setsaveConfirmation] = useState(false)
     const [ResendMsg, setResendMsg] = useState(false)
     const [showUpload, setshowUpload] = useState(false)
@@ -51,6 +53,7 @@ const ViewList = (props) => {
     const [sex, setsex] = React.useState("")
     const [Age, setAge] = React.useState("")
     const [Comments, setComments] = useState({ value: '' })
+    const [AttachmentPath, setAttachmentPath] = useState({ file: '', fileName: '' });
     const [MobileNo, setMobileNo] = useState({ value: '' })
     const [RMobileNo, setRMobileNo] = useState({ value: '' })
     const [HNO, setHNO] = React.useState("")
@@ -76,6 +79,7 @@ const ViewList = (props) => {
     const [currentPage, setCurrentPage] = React.useState(0);
     const [currentPosition, setcurrentPosition] = React.useState(0);
     const [labels, setlabels] = React.useState(null);
+    const [ActivitiesList, setActivitiesList] = React.useState(null);
      // ["Cart","Delivery Address","Order Summary","Payment Method","Track"];
     const clickImage = async () => {
 
@@ -118,25 +122,23 @@ const ViewList = (props) => {
         currentStepLabelColor: '#5592d9',
       }
        
-       
-      
-    const pickImage = async () => {
+      const pickImage = async (flg) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
-
-
-
+    
+    
+    
         if (!result.canceled) {
-            // let image = await ImageManipulator.manipulateAsync(result.uri,[{resize:{width:1000,height:760}}],{compress: 0})
+            // let image = await ImageManipulator.manipulateAsync(result.uri,[{resize:{width:1080,height:720}}],{compress: 0})
             let fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
-            setImage(fileInfo);
-
+            setAttachmentPath({ file: result.assets[0].uri, fileName: result.assets[0].uri.split("/").slice(-1)[0],Dur:0 })
+    
         }
-    };
+    };   
+       
     const notifyMessage = (msg) => {
         if (Platform.OS === 'android') {
             ToastAndroid.show(msg, ToastAndroid.SHORT)
@@ -254,7 +256,16 @@ const ViewList = (props) => {
         setModalVisible(false)
         setsaveConfirmation(false)
     }
-     
+    
+    const deleteAttachment = async (flg) => {
+        if (flg == 1) {
+           
+            setAttachmentPath({ file: "", fileName: "" })
+        } 
+      }
+    const ViewAttachment = (file) => {
+        Linking.openURL(file);
+    } 
     
     const go2Home = async () => {
         props.navigation.replace('DrawerStack', { screen: 'Home' })
@@ -280,8 +291,12 @@ const ViewList = (props) => {
     }
     const showdetails = (item) => { 
         setModalTitle(item.title);
-        setPID(item.id); setPstatus(item.status);
-        setselectedStatus("");
+        setPID(item.id); 
+        setPstatus(item.status); 
+        setPImage(item.attachment);
+        setPAudioPath(item.audio_path);
+        setPstatus(item.status); 
+        setselectedStatus("");setlabels([]); 
             setModalVisible(true)  
             var service = new Services();
             const body = {
@@ -301,13 +316,8 @@ const ViewList = (props) => {
                 if (resonseData.errorCode == -100) {
                     notifyMessage(resonseData.response);
                 }
-                else if (resonseData.errorCode == 200) {
-                  
-                    var _filteredList = [];
-                    resonseData.response["Table"].map((myValue, myIndex) => {
-                      _filteredList.push(myValue.status + " ( " + myValue.format_date + " )");
-                    });
-                    setlabels(_filteredList); 
+                else if (resonseData.errorCode == 200) { 
+                    setActivitiesList(resonseData.response["Table"]) 
                 }
             });
     }
@@ -328,14 +338,22 @@ const ViewList = (props) => {
           }
 else{
             var service = new Services();
-            const body = {
-                AssignedUser: userId,
-                Pid: PID, Comments: Comments.value,
-                Status: selectedStatus,
-                Userid: userObject.ID, 
-            };
-             
-            service.postData('/_UpdateActivity', body).then(data => {
+            var payload = new FormData(); 
+            payload.append('AssignedUser', userId);
+            payload.append('Pid', PID);  
+            payload.append('Comments', Comments.value);  
+            payload.append('Status', selectedStatus); 
+             payload.append('UserId', userObject.ID);  
+            payload.append('lat', location != undefined && location != null && location.coords != null ? location.coords.latitude : "");
+            payload.append('lon', location != undefined && location != null && location.coords != null ? location.coords.longitude : "");
+            if (AttachmentPath != null && AttachmentPath != '') {
+                payload.append('imagePath2', {
+                    uri: AttachmentPath.file,
+                    type: 'image/jpeg',
+                    name: "test"
+                });
+            }
+            service.postFormData('/_UpdateActivity', payload).then(data => {
 
                 if (data == null || data == "") {
                     openSnackBar("Invalid request object");
@@ -349,7 +367,7 @@ else{
                     notifyMessage("Successfully Submitted");
                     setModalVisible(false);
                     setComments('');
-                   
+                    setAttachmentPath({ file: "", fileName: "" })
                 }
             });
         }
@@ -475,18 +493,69 @@ else{
                                 </View>
 
                                 <ScrollView style={{ width: '100%' }}> 
-                                    <View style={{width:'100%',height:300,alignItems:'flex-start',marginBottom:hp('2%')}}>
-                                <StepIndicator
+                                   
+        <View style={{width:'100%',height:100,alignItems:'flex-start',marginBottom:hp('2%')}}> 
+            <TouchableOpacity   style={styles.ann_img_1}  onPress={() => { ViewAttachment(PAudioPath) }} > 
+            <Image  style={styles.ann_img_1} source={ImageAssets.play_icon} />
+            <Text style={{top:50,left:10}}>Audio</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity  style={styles.ann_img} onPress={() => { ViewAttachment(PImage) }} >
+                                   
+                                    <Image  style={styles.ann_img} source={{ uri: PImage }}   />
+                                    <Text style={{top:50,left:50}}>Attachment</Text>
+                                    </TouchableOpacity>
+        
+            </View>
+
+            <View style={{width:'100%', alignItems:'flex-start',marginBottom:hp('2%')}}>
+                                {/* <StepIndicator
           customStyles={customStyles}
           stepCount={labels==undefined?0:labels.length}
           direction="vertical"
           currentPosition={labels==undefined?0:labels.length-1}
           labels={labels} 
-        />
-        </View>
+        /> */}
+        {ActivitiesList != null && ActivitiesList != undefined && ActivitiesList.length>0 && ActivitiesList.map((item, index) => (
+ <> 
+ <View style={styles.div_bg} >
+  <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
+       
+      <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'100%' }}> 
+      <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.comments}</Text>
+  </View>
+  </View> 
+  <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+
+
+<View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
+<View style={{ flexDirection: "row",alignItems:'center',width:'25%' }}> 
+<Text  style={{ color: "#faab3b", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>{item.status}</Text>
+</View> 
+<View style={{ flexDirection: "row",alignItems:'center',width:'23%' }}> 
+<TouchableOpacity onPress={() => { ViewAttachment(item.attachment) }} style={{ flexDirection: "row", alignItems: "center" }}> 
+<Image  style={styles.act_img} source={{ uri: item.attachment }}   />
+ </TouchableOpacity>
+
+</View> 
+<View style={{ flexDirection: "row",alignItems:'center',width:'50%' }}>
+<Icon name='clock' size={wp('4%')} color={'#5592d9'}></Icon>
+<Text style={{ marginLeft:wp('2%'),fontSize: wp('3.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.format_date}</Text>
+</View>
+</View>
+</View> 
+</View> 
+ 
+</>
+                                       ))
+                                    }
+
+        </View>
 {Pstatus!="Completed" &&
 <>
+<View style={styles.fieldSet}>
+<Text style={styles.legend}>Update Activity</Text>
                                     <View style={{ width: ('100%'), marginBottom: 15 }}> 
                                     <HashedDropdown dropdownName="Select" style={styles.input}
                                             onSelect={(selectedItem, index) => setselectedStatus(selectedItem)}
@@ -502,6 +571,33 @@ else{
                                          
                                     </View>
 }
+{AttachmentPath == null || AttachmentPath.fileName == '' &&
+                                        <View style={{ width: ('100%'), marginBottom: 15 }}>
+                    <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
+                   
+                    <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  
+                    <Text style={styles.button_submit_txt}>Upload attachment</Text>
+                  
+                  </TouchableOpacity>
+                  </View>
+                  }
+
+                                    {AttachmentPath != null && AttachmentPath.fileName != '' &&
+                                        <>
+                                            <View style={{ width: ('100%'), marginBottom: 15 }}>
+                                                <Text  >Attachment</Text></View>
+                                            <View  >
+                                            <Icon name='attachment' size={wp('6%')} color={'#ff7900'}></Icon>
+                                                <Text style={styles.attach_file} ellipsizeMode='tail' numberOfLines={1} >
+                                                    {AttachmentPath != null && AttachmentPath.fileName != null ? AttachmentPath.fileName : ""}
+
+                                                </Text>
+                                                <TouchableOpacity style={styles.attach_file_icon} onPress={() => { deleteAttachment(1) }}>
+                                                <Icon name='delete-circle' size={wp('6%')} color={'#d95554'}></Icon>
+                                                </TouchableOpacity>
+                                            </View></>
+                                    }
+
                                     <View style={{ width: ('100%'), marginBottom: 15 }}>
                                        
                                         <TextInput theme={{ colors: { primary: "transparent" } }}
@@ -526,6 +622,7 @@ onPress={() => { SubmitStatus() }} >
      
 </TouchableOpacity>
 
+</View>
 </View>
 </>
 }
@@ -588,6 +685,27 @@ const styles = StyleSheet.create({
                 fontSize: wp("3%"),
             }
         })
+    },
+    act_img: { 
+        width: ('100%'),
+        height: 50,
+        resizeMode: 'contain'
+    },
+    ann_img: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        width: ('40%'),
+        height: 50,
+        resizeMode: 'contain'
+    },
+    ann_img_1: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: ('40%'),
+        height: 50,
+        resizeMode: 'contain'
     },
     centeredView: {
         flex: 1,
@@ -680,6 +798,21 @@ const styles = StyleSheet.create({
     StatusBar: {
         height: Constants.statusBarHeight,
         backgroundColor: 'transparent'
+    },
+    fieldSet:{ 
+        paddingTop: 20,
+        paddingHorizontal: 10,
+        paddingBottom: 10,
+        borderRadius: 5,
+        borderWidth: 1, 
+        borderColor: '#000'
+    },
+    legend:{
+        position: 'absolute',
+        top: -10,
+        left: 10,
+        fontWeight: 'bold',
+        backgroundColor: '#FFFFFF'
     },
     button_submit: {
         width: wp('60%'),

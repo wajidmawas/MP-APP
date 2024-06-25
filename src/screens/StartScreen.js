@@ -422,14 +422,14 @@ export default function StartScreen({ navigation }) {
                  
                 </View>
                 
-                <View style={styles.btn1} 
+                {/* <View style={styles.btn1} 
                     >
                       <Text style={{fontSize:wp('5%'),color:'#fff',marginBottom:hp('2%'),fontFamily:'InterRegular'}}>Don't have account?</Text>
                       <TouchableOpacity onPress={signup}>
                         <Text style={{fontSize:wp('8%'),color:'#fff',fontFamily:'InterBold'}}>Sign Up</Text>
                       </TouchableOpacity>
                     </View> 
-                    
+                     */}
               </KeyboardAwareScrollView> 
 
                 <View style={styles.login_bg}>

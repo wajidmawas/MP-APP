@@ -274,6 +274,10 @@ const onRecordingStatusUpdate =async(e)=>{
       || PDesc.value === null ) {
       notifyMessage('Please enter summary')
     }
+    if (AttachmentPath === '' || AttachmentPath === undefined
+      || AttachmentPath.file === null || AttachmentPath.file === "") {
+      notifyMessage('Please select attachment')
+    }
     
     else {
       var service = new Services(); 
@@ -401,7 +405,7 @@ const onRecordingStatusUpdate =async(e)=>{
                     <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
                    
                     <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  
-                    <Text style={styles.button_submit_txt}>Upload Photos</Text>
+                    <Text style={styles.button_submit_txt}>Upload attachment</Text>
                   
                   </TouchableOpacity>
                   }
