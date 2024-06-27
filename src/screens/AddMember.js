@@ -344,7 +344,7 @@ const onRecordingStatusUpdate =async(e)=>{
         <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
-        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
+        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
 
         </TouchableOpacity>
       </View>

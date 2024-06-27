@@ -27,7 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Services from '../actions/services'; 
 import NetInfo from '@react-native-community/netinfo';
 
-const UserWiseBeneficiaries = (props) => {
+const UserWisePetitions = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [viewHide, setviewHide] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
@@ -91,7 +91,7 @@ const UserWiseBeneficiaries = (props) => {
             var _userObject = obj;
         var service = new Services(); 
                 const body = {
-                  TypeId: 8,
+                  TypeId: 6,
                   UserId: _userObject.ID,
                   FilterId: _userObject.State,
                   FilterText: ''
@@ -147,7 +147,7 @@ const UserWiseBeneficiaries = (props) => {
                         <View style={UserLabel.play_div}> 
                         <View style={styles.top_div}>
                                 <Text style={{fontFamily:"InterRegular"}}>Total Records</Text>
-                                <Text style={{fontFamily:"InterBold",fontSize:wp("10%"),color:"#00334f", marginTop:hp("2%"),fontWeight:"bold"}}>{(userwise != null ? (userwise.reduce((a,v) =>  a = a + v.Column1 , 0 )): 0)}</Text> 
+                                <Text style={{fontFamily:"InterBold",fontSize:wp("10%"),color:"#00334f", marginTop:hp("2%"),fontWeight:"bold"}}>{(userwise != null ? (userwise.reduce((a,v) =>  a = a + v.total , 0 )): 0)}</Text> 
                                 </View>
                                 <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",width:('90%'),marginBottom:hp('1%'),paddingHorizontal:wp('2%')}}>
                                 <TextInput  
@@ -163,12 +163,18 @@ const UserWiseBeneficiaries = (props) => {
                                 <View style={{flexDirection:"row",alignItems:"center",width:wp('90%'),marginVertical:hp('1%'),paddingHorizontal:wp('2%')}}> 
                                 <View style={{flexDirection:"row",alignItems:"center"}}>
                                         <Text style={[styles.up_rank,{color:"#007bff"}]}>T : Total</Text>
-                                        <Text style={[styles.up_rank,{color:"#29A500"}]}>V : Verified</Text>
-                                        <Text style={[styles.up_rank,{color:"#e0a800"}]}>P : Pending</Text>
+                                        <Text style={[styles.up_rank,{color:"#29A500"}]}>N : New</Text>
+                                        <Text style={[styles.up_rank,{color:"#e0a800"}]}>A : Assigned</Text>
                                         <Text style={[styles.up_rank,{color:"#c82333"}]}>R : Rejected</Text>
-                                        </View>
-                                        
+                                        <Text style={[styles.up_rank,{color:"#green"}]}>C : Completed</Text>
+                                        </View> 
                                     </View>
+                                    <View style={{flexDirection:"row",alignItems:"center",width:wp('90%'),marginVertical:hp('1%'),paddingHorizontal:wp('2%')}}> 
+                                          <View style={{flexDirection:"row",alignItems:"center"}}>
+                                        <Text style={[styles.up_rank,{color:"#007bff"}]}>O : On-Hold</Text>
+                                        <Text style={[styles.up_rank,{color:"#29A500"}]}>I : InProgress</Text> 
+                                        </View>
+                                        </View>
                                     <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#000" />} > 
                                 <View style={{backgroundColor:"#fff",paddingBottom:hp('8%')}}>
@@ -179,14 +185,24 @@ const UserWiseBeneficiaries = (props) => {
                                 <View style={{flexDirection:"column",width:wp('100%'),alignItems:"flex-start",paddingHorizontal:wp("1%"),}}> 
                                 <View style={{flexDirection:"row", alignItems:"center",justifyContent:"space-between",width:("80%")}}> 
                                 <Text style={UserLabel.roletext} ellipsizeMode='tail' numberOfLines={1}>{item.name}</Text> 
+                                <Text style={UserLabel.roletext_spa} ellipsizeMode='tail' numberOfLines={1}>{ '(' + item.SPA + ')'}</Text> 
                                 <Text style={UserLabel.roletext}>Rank : {index+1}  </Text>
                                 </View>
                                 <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
-                                <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>T : {item.Column1}</Text> 
-                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>V : {item.Verified}</Text> 
-                                <Text style={[UserLabel.roletext,{color:"#e0a800"}]} ellipsizeMode='tail' numberOfLines={1}>P : {item.Pending}</Text>
+                                <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>T : {item.total}</Text> 
+                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>N : {item.New}</Text> 
+                                <Text style={[UserLabel.roletext,{color:"#e0a800"}]} ellipsizeMode='tail' numberOfLines={1}>A : {item.Assigned}</Text>
                                 <Text style={[UserLabel.roletext,{color:"#c82333"}]} ellipsizeMode='tail' numberOfLines={1}>R : {item.Rejected}</Text>
+                                <Text style={[UserLabel.roletext,{color:"green"}]} ellipsizeMode='tail' numberOfLines={1}>C : {item.Completed}</Text>
                                 </View>
+                                <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
+                                <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>O : {item["On-Hold"]}</Text> 
+                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>I : {item.InProgress}</Text>  
+                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
+                                  <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
+                                  <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
+                                </View>
+
                                 </View> 
                                 </View>
                                 </View>
@@ -209,7 +225,7 @@ const UserWiseBeneficiaries = (props) => {
     )
 
 }
-export default UserWiseBeneficiaries
+export default UserWisePetitions
 
 const styles = StyleSheet.create({
     input: { 
@@ -512,6 +528,13 @@ const UserLabel = StyleSheet.create({
         fontSize: wp('3.5%'),  
         textAlign:'left', 
         marginVertical:hp("1%"), 
+        fontFamily:"InterBold", 
+        
+    },
+    roletext_spa: {
+        color: '#2a6496',
+        fontSize: wp('2.0%'),  
+        textAlign:'left',  
         fontFamily:"InterBold", 
         
     },

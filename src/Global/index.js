@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Register from '../screens/Register'
 import Dashboard from '../screens/Dashboard'
 import Reports from '../screens/Reports';
+import UserWisePetitions from '../screens/UserWisePetitions';
 import Home from '../screens/Home' 
  import ViewList from '../screens/ViewList';
  import AddMember from '../screens/AddMember'; 
@@ -67,10 +68,10 @@ const AppNavigation = () => {
                 }}
             />
               <Drawer.Screen
-                name="Reports"
-                component={Reports}
+                name="UserWisePetitions"
+                component={UserWisePetitions}
                 options={{
-                    drawerLabel: 'Dashboard',
+                    drawerLabel: 'UserWisePetitions',
                     headerShown: false,
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons

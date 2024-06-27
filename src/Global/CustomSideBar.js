@@ -130,7 +130,9 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                         case 'New Petition':
                             props.nav.navigate("AddMember");
                             break;
-                               
+                       case 'User Wise Petitions':
+                            props.nav.navigate("UserWisePetitions");
+                            break;         
                     case 'Logout':
                         AsyncStorage.setItem('userSession', "")
                         props.nav.dispatch(DrawerActions.closeDrawer())
@@ -170,6 +172,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                 {/* <CustomDrawerItem label='My Profile' icon="username" nav={navigation}     /> */}
                 <CustomDrawerItem label='Dashboard' icon="view-dashboard" nav={navigation} />   
                 <CustomDrawerItem label='New Petition' icon="plus" nav={navigation}  />
+                <CustomDrawerItem label='User Wise Petitions' icon="view-list" nav={navigation} /> 
                 <CustomDrawerItem label='Logout' icon="logout" nav={navigation} /> 
                 <CustomDrawerItem label='Delete Account' icon="delete" nav={navigation} />
                 {/* <CustomDrawerItem label='Campaigns' icon="username" nav={navigation}  />
