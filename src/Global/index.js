@@ -9,6 +9,7 @@ import Dashboard from '../screens/Dashboard'
 import Reports from '../screens/Reports';
 import UserWisePetitions from '../screens/UserWisePetitions';
 import Home from '../screens/Home' 
+import DepartmentWisePetitions from '../screens/DepartmentWisePetitions';
  import ViewList from '../screens/ViewList';
  import AddMember from '../screens/AddMember'; 
  import Article from '../screens/Article'; 
@@ -72,6 +73,21 @@ const AppNavigation = () => {
                 component={UserWisePetitions}
                 options={{
                     drawerLabel: 'UserWisePetitions',
+                    headerShown: false,
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-home"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+               <Drawer.Screen
+                name="DepartmentWisePetitions"
+                component={DepartmentWisePetitions}
+                options={{
+                    drawerLabel: 'DepartmentWisePetitions',
                     headerShown: false,
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons

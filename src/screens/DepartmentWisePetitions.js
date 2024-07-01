@@ -27,7 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Services from '../actions/services'; 
 import NetInfo from '@react-native-community/netinfo';
 
-const UserWisePetitions = (props) => {
+const DepartmentWisePetitions = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [viewHide, setviewHide] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
@@ -91,7 +91,7 @@ const UserWisePetitions = (props) => {
             var _userObject = obj;
         var service = new Services(); 
                 const body = {
-                  TypeId: 6,
+                  TypeId: 7,
                   UserId: _userObject.ID,
                   FilterId: _userObject.State,
                   FilterText: ''
@@ -114,12 +114,6 @@ const UserWisePetitions = (props) => {
                     }
                 }); 
             })
-    }
-    const gotoViewlist = (id) => {  
-        props.navigation.replace('DrawerStack', {
-            screen: 'ViewList',
-            params: { screenName: "TOTAL",userid:id }
-        })
     }
     const back = () => {
        props.navigation.replace('DrawerStack', { screen: 'Home' })
@@ -186,15 +180,11 @@ const UserWisePetitions = (props) => {
                                 <View style={{backgroundColor:"#fff",paddingBottom:hp('8%')}}>
                         {userwise != null && userwise.map((item, index) => (
                           
-                          <TouchableOpacity  
-                          onPress={() => { gotoViewlist(item.id) }} key={index}>  
-                           
                                 <View style={styles.div_bg} key={index}> 
                                  <View  key={index} style={{width:wp('95%'),paddingHorizontal:wp('4%'),paddingVertical:hp("2%"),flexDirection:'row',justifyContent:"space-between",alignItems:'center'}}>
                                 <View style={{flexDirection:"column",width:wp('100%'),alignItems:"flex-start",paddingHorizontal:wp("1%"),}}> 
                                 <View style={{flexDirection:"row", alignItems:"center",justifyContent:"space-between",width:("80%")}}> 
-                                <Text style={UserLabel.roletext} ellipsizeMode='tail' numberOfLines={1}>{item.name}</Text> 
-                                <Text style={UserLabel.roletext_spa} ellipsizeMode='tail' numberOfLines={1}>{ '(' + item.SPA + ')'}</Text> 
+                                <Text style={UserLabel.roletext} ellipsizeMode='tail' numberOfLines={1}>{item.name}</Text>  
                                 <Text style={UserLabel.roletext}>Rank : {index+1}  </Text>
                                 </View>
                                 <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
@@ -215,9 +205,7 @@ const UserWisePetitions = (props) => {
                                 </View> 
                                 </View>
                                 </View>
-                                     
-                          </TouchableOpacity>
-                          
+                                 
                         ))
                     }
                              
@@ -236,7 +224,7 @@ const UserWisePetitions = (props) => {
     )
 
 }
-export default UserWisePetitions
+export default DepartmentWisePetitions
 
 const styles = StyleSheet.create({
     input: { 

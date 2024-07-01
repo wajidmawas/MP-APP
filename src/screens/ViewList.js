@@ -38,7 +38,8 @@ const ViewList = (props) => {
     const [val, setVal] = useState(false);
     const [loading, setloading] = React.useState(false)
     const [disabledButton, setdisabledButton] = React.useState(false)
-    const [screenName, setscreenName] = useState("Members");
+    const [screenName, setscreenName] = useState("Petitions");
+    const [tempUser, settempUser] = useState(0);
     const [userObject, setUserObject] = useState({});
     const { isActive, type, message, openSnackBar, closeSnackBar } = useSnackbar();
     const [state, setState] = useState({});
@@ -158,8 +159,12 @@ const ViewList = (props) => {
             props["route"]["params"]["screenName"] != null && props["route"]["params"]["screenName"] != undefined) {
             setscreenName(props["route"]["params"]["screenName"])
         }
+        if (props["route"]["params"] != undefined &&
+            props["route"]["params"]["userid"] != null && props["route"]["params"]["userid"] != undefined) {
+            settempUser(props["route"]["params"]["userid"])
+        }
         GetCurrentLocation();
-        onLoad(props["route"]["params"]["screenName"]);
+        onLoad(props["route"]["params"]["screenName"],props["route"]["params"]["userid"]);
     }, [])
     const GetCurrentLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -197,17 +202,17 @@ const ViewList = (props) => {
         }
 
     }
-    const onLoad = async (screenName) => {
-        setloading(false) 
-        loadMastersData(screenName);
+    const onLoad = async (screenName,userid) => {
+        setloading(false)  
+        loadMastersData(screenName,userid);
     } 
     const reloadData = async () => {
         setloading(true) 
-        loadMastersData();
+        loadMastersData(screenName,tempUser);
     }
 
     
-    const loadMastersData = async (screenName) => {
+    const loadMastersData = async (screenName,userid) => {
         await AsyncStorage.getItem("userSession").then(async (value) => {
             let obj = JSON.parse(value);
             var _userObject = obj; 
@@ -216,11 +221,11 @@ const ViewList = (props) => {
                 var service = new Services();
                 const body = {
                     TypeId: 4,
-                    filterId: _userObject.ID,
+                    filterId: userid,
                     filterText: screenName,
-                    UserId: _userObject.ID, 
+                    UserId: userid, 
                 };
-                 
+                 console.log(body)
                 service.postData('/_getMasters', body).then(data => {
 
                     if (data == null || data == "") {
@@ -432,17 +437,20 @@ else{
                                         <>
 
                                         {PetitionList != null && PetitionList != undefined && PetitionList.length>0 && PetitionList.map((item, index) => (
-  <View style={styles.div_bg} >
+  <View style={styles.div_bg}  key={index}>
   <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
        
-      <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'100%' }}>
+      <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'70%' }}>
       <Text style={{ fontSize: wp('4.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.title}</Text>
       <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.description}</Text>
   </View>
+  <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'30%' }}>
+      <Text style={{ fontSize: wp('2.5%'), color: "#383838", fontFamily: "InterBold" }}>Assigned To: {item.Assigned}</Text> 
+  </View>
   </View> 
   <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-
+ 
 
 <View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
 <View style={{ flexDirection: "row",alignItems:'center',width:'33%' }}> 

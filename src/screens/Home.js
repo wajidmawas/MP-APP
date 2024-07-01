@@ -196,7 +196,7 @@ const Home = (props) => {
     const gotoViewlist = (title) => {  
         props.navigation.replace('DrawerStack', {
             screen: 'ViewList',
-            params: { screenName: title }
+            params: { screenName: title,userid:userObject.ID }
         })
     }
     const newPetition = () => {
@@ -250,7 +250,7 @@ const Home = (props) => {
 
                             <View style={{ width: wp('50%'), flexDirection: "column", alignItems: 'flex-start', paddingLeft: wp('5%') }}>
                                 <View style={{ backgroundColor: "#deefff", marginBottom: hp('4%'), borderRadius: 15, paddingVertical: 5, paddingHorizontal: 15 }}>
-                                    <Text style={{ color: '#5592d9', fontSize: wp('4%') }}>Announcements</Text>
+                                    <Text style={{ color: '#5592d9', fontSize: wp('4%') }}>Dashboard</Text>
                                 </View>
 
                                 <Text style={{ color: '#383838', fontSize: wp('8%'), fontFamily: 'InterRegular' }}>Today's Challenge</Text>
@@ -263,7 +263,7 @@ const Home = (props) => {
                                 style={styles.cardsWrapper}
                                 data={CARDS_DATA}
                                 renderItem={In_Cards}
-                                horizontal={true}
+                                horizontal={true} 
                                 keyExtractor={(item) => item.title}
                                 showsHorizontalScrollIndicator={false}
                                 contentContainerStyle={{ paddingRight: 20 }}

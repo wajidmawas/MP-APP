@@ -273,12 +273,7 @@ const onRecordingStatusUpdate =async(e)=>{
     else if (PDesc.value === '' || PDesc.value === undefined
       || PDesc.value === null ) {
       notifyMessage('Please enter summary')
-    }
-    if (AttachmentPath === '' || AttachmentPath === undefined
-      || AttachmentPath.file === null || AttachmentPath.file === "") {
-      notifyMessage('Please select attachment')
-    }
-    
+    }    
     else {
       var service = new Services(); 
               var payload = new FormData();
