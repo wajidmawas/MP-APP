@@ -284,14 +284,14 @@ const onRecordingStatusUpdate =async(e)=>{
                  payload.append('UserId', userObject.ID);  
                 payload.append('lat', location != undefined && location != null && location.coords != null ? location.coords.latitude : "");
                 payload.append('lon', location != undefined && location != null && location.coords != null ? location.coords.longitude : "");
-                if (AttachmentPath != null && AttachmentPath != '') {
+                if (AttachmentPath != null && AttachmentPath != '' && AttachmentPath.file != '') {
                     payload.append('imagePath2', {
                         uri: AttachmentPath.file,
                         type: 'image/jpeg',
                         name: "test"
                     });
                 }
-                if (AudioPath != null && AudioPath != '') {
+                if (AudioPath != null && AudioPath != '' && AudioPath.file != '') {
                     let uriParts = AudioPath.file.split('.');
                     let fileType = uriParts[uriParts.length - 1];
                     payload.append('audiofile', {
@@ -302,15 +302,14 @@ const onRecordingStatusUpdate =async(e)=>{
 
                 }
 
+                console.log(payload)
       service.postFormData('/_SavePetitionDetails', payload).then(data => {
         setVal(false)
         if (data == null || data == "") {
           openSnackBar("Invalid request object");
           return false;
         }
-
-        var resonseData = JSON.parse(data)
-        console.log(resonseData)
+        var resonseData = JSON.parse(data) 
         if (resonseData.errorCode == -100) {
           notifyMessage(resonseData.message);
         }
