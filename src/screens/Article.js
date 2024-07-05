@@ -151,7 +151,7 @@ const Article = (props) => {
         const body = {
           TypeId: 5,
           UserId: _userObject.ID,
-          FilterId: _userObject.State,
+          FilterId: _userObject.stateid,
           FilterText: ''
         };
         service.postData('/_getMasters', body).then(data => {
