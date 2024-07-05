@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
     paddingBottom: hp("10%"),
     ...Platform.select({
       android: {
-        marginTop: hp("4%"),
+        marginTop: hp("10%"),
         paddingBottom: hp("10%"),
       },
     }),

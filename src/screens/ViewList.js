@@ -151,7 +151,7 @@ const ViewList = (props) => {
         setRefreshing(true);
         setTimeout(() => {
             setRefreshing(false);
-            onLoad(screenName)
+            onLoad(screenName,tempUser)
         }, 1000);
     }, []);
     useEffect(() => {
@@ -351,7 +351,7 @@ else{
              payload.append('UserId', userObject.ID);  
             payload.append('lat', location != undefined && location != null && location.coords != null ? location.coords.latitude : "");
             payload.append('lon', location != undefined && location != null && location.coords != null ? location.coords.longitude : "");
-            if (AttachmentPath != null && AttachmentPath != '') {
+            if (AttachmentPath != null && AttachmentPath.file != '') {
                 payload.append('imagePath2', {
                     uri: AttachmentPath.file,
                     type: 'image/jpeg',

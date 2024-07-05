@@ -8,10 +8,13 @@ import Register from '../screens/Register'
 import Dashboard from '../screens/Dashboard'
 import Reports from '../screens/Reports';
 import UserWisePetitions from '../screens/UserWisePetitions';
+import AssignedPetitions from '../screens/AssignedPetitions';
+import UserWiseRank from '../screens/UserWiseRank';
 import Home from '../screens/Home' 
 import DepartmentWisePetitions from '../screens/DepartmentWisePetitions';
  import ViewList from '../screens/ViewList';
  import AddMember from '../screens/AddMember'; 
+ import CompletedPetitions from '../screens/CompletedPetitions';
  import Article from '../screens/Article'; 
 import CustomSideBar from '../Global/CustomSideBar';
 import { AppContext } from '../Global/Stores'; 
@@ -73,6 +76,51 @@ const AppNavigation = () => {
                 component={UserWisePetitions}
                 options={{
                     drawerLabel: 'UserWisePetitions',
+                    headerShown: false,
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-home"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="UserWiseRank"
+                component={UserWiseRank}
+                options={{
+                    drawerLabel: 'UserWiseRank',
+                    headerShown: false,
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-home"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+              <Drawer.Screen
+                name="CompletedPetitions"
+                component={CompletedPetitions}
+                options={{
+                    drawerLabel: 'CompletedPetitions',
+                    headerShown: false,
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-home"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+              <Drawer.Screen
+                name="AssignedPetitions"
+                component={AssignedPetitions}
+                options={{
+                    drawerLabel: 'AssignedPetitions',
                     headerShown: false,
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons

@@ -57,8 +57,7 @@ const Home = (props) => {
               style={[card_styles.background]}
               colors={[cardColor, cardColor]}
             >
-              <View style={card_styles.wrapper} key={item.title}>
-               
+              <View   key={item.title}> 
                 <Text style={card_styles.title}>{title}</Text> 
                 <Text style={card_styles.lastFourDigits}>{lastFourDigits}</Text>
               </View>
@@ -104,8 +103,11 @@ const Home = (props) => {
                         notifyMessage(resonseData.message);
                     }
                     else if (resonseData.errorCode == 200) {
+                        
                         setTotalRecords(resonseData.response["Table"]);
                         setdashboardDtls(resonseData.response["Table1"]);
+                        
+
                         SETCARDS_DATA([
                             {
                                 title: "Total",
@@ -114,17 +116,26 @@ const Home = (props) => {
                             },
                             {
                                 title: "New",
-                                lastFourDigits: resonseData.response["Table1"][0]["New"],
+                                lastFourDigits: resonseData.response["Table1"].length>0 ?
+                                 resonseData.response["Table1"][0]["New"] : 0,
                                 cardColor: COLORS.green,
                             },
                             {
                                 title: "Assigned",
-                                lastFourDigits: resonseData.response["Table1"][0]["Assigned"],
+                                lastFourDigits: resonseData.response["Table1"].length>0 ? 
+                                resonseData.response["Table1"][0]["Assigned"] : 0,
                                 cardColor: COLORS.blue,
                             },
                             {
+                                title: "Acknowledged",
+                                lastFourDigits: resonseData.response["Table1"].length>0 ? 
+                                resonseData.response["Table1"][0]["Acknowledged"] : 0,
+                                cardColor: COLORS.black,
+                            },
+                            {
                                 title: "Completed",
-                                lastFourDigits: resonseData.response["Table1"][0]["Completed"],
+                                lastFourDigits: resonseData.response["Table1"].length>0 ?
+                                resonseData.response["Table1"][0]["Completed"] : 0,
                                 cardColor: COLORS.orange,
                             },
                         ]);
@@ -269,7 +280,7 @@ const Home = (props) => {
                                 contentContainerStyle={{ paddingRight: 20 }}
                             />
                         </View>
-
+ {userObject!=undefined && userObject.ROLETYPE!="C" &&
                         <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  marginTop: 0, paddingHorizontal: wp('2%') }}>
 
                             <TouchableOpacity style={styles.button_submit} 
@@ -281,6 +292,7 @@ const Home = (props) => {
                             </TouchableOpacity>
 
                         </View>
+}
                     </View>
 
 
@@ -761,7 +773,7 @@ const card_styles = StyleSheet.create({
     },  
     title: {
       marginTop: 0,
-      fontSize:widthPercentageToDP('5%'),
+      fontSize:widthPercentageToDP('4%'),
       color:'#fff',
       fontFamily:'InterBold'
     }, 

@@ -132,7 +132,15 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                             break;
                        case 'User Wise Petitions':
                             props.nav.navigate("UserWisePetitions");
-                            break;         
+                            break;       
+                      case 'Assigned Petitions':
+                                props.nav.navigate("AssignedPetitions");
+                        break;   
+                        case 'User Wise Rank':
+                                props.nav.navigate("UserWiseRank");
+                         case 'Completed Petitions':
+                                props.nav.navigate("CompletedPetitions");
+                        break;       
                             case 'Department Wise Petitions':
                                 props.nav.navigate("DepartmentWisePetitions");
                                 break;    
@@ -174,15 +182,23 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
             <View style={styles.Container1}>
                 {/* <CustomDrawerItem label='My Profile' icon="username" nav={navigation}     /> */}
                 <CustomDrawerItem label='Dashboard' icon="view-dashboard" nav={navigation} />   
-                <CustomDrawerItem label='New Petition' icon="plus" nav={navigation}  />
-                {userObject!=null && userObject.ROLETYPE=='A' &&
-<>
-<CustomDrawerItem label='User Wise Petitions' icon="view-list" nav={navigation} /> 
-<CustomDrawerItem label='Department Wise Petitions' icon="view-list" nav={navigation} /> 
-</>
-              
-                
-}
+                {userObject!=null && userObject.ROLETYPE!='C' &&
+                 <CustomDrawerItem label='New Petition' icon="plus" nav={navigation}  />
+                }
+                 {userObject!=null && userObject.ROLETYPE=='C' &&
+                 <>
+                 <CustomDrawerItem label='Assigned Petitions' icon="view-list" nav={navigation}  />
+                 <CustomDrawerItem label='User Wise Rank' icon="view-list" nav={navigation}  />
+                 </>
+                }
+                {userObject!=null && userObject.ROLETYPE!='C' &&
+                <>
+                <CustomDrawerItem label='User Wise Petitions' icon="view-list" nav={navigation} /> 
+                <CustomDrawerItem label='Department Wise Petitions' icon="view-list" nav={navigation} /> 
+                <CustomDrawerItem label='Completed Petitions' icon="view-list" nav={navigation} /> 
+                </> 
+                                
+                }
                 <CustomDrawerItem label='Logout' icon="logout" nav={navigation} /> 
                 <CustomDrawerItem label='Delete Account' icon="delete" nav={navigation} />
                 {/* <CustomDrawerItem label='Campaigns' icon="username" nav={navigation}  />

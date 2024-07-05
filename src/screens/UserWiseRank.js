@@ -27,7 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Services from '../actions/services'; 
 import NetInfo from '@react-native-community/netinfo';
 
-const UserWisePetitions = (props) => {
+const UserWiseRank = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [viewHide, setviewHide] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
@@ -91,7 +91,7 @@ const UserWisePetitions = (props) => {
             var _userObject = obj;
         var service = new Services(); 
                 const body = {
-                  TypeId: 6,
+                  TypeId: 9,
                   UserId: _userObject.ID,
                   FilterId: _userObject.stateid, 
                   FilterText: ''
@@ -187,8 +187,7 @@ const UserWisePetitions = (props) => {
                                 <View style={{backgroundColor:"#fff",paddingBottom:hp('8%')}}>
                         {userwise != null && userwise.map((item, index) => (
                           
-                          <TouchableOpacity  
-                          onPress={() => { gotoViewlist(item.id) }} key={index}>  
+                          <TouchableOpacity   key={index}>  
                            
                                 <View style={styles.div_bg} key={index}> 
                                  <View  key={index} style={{width:wp('95%'),paddingHorizontal:wp('4%'),paddingVertical:hp("2%"),flexDirection:'row',justifyContent:"space-between",alignItems:'center'}}>
@@ -237,7 +236,7 @@ const UserWisePetitions = (props) => {
     )
 
 }
-export default UserWisePetitions
+export default UserWiseRank
 
 const styles = StyleSheet.create({
     input: { 

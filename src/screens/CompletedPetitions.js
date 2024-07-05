@@ -27,7 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Services from '../actions/services'; 
 import NetInfo from '@react-native-community/netinfo';
 
-const UserWisePetitions = (props) => {
+const CompletedPetitions = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [viewHide, setviewHide] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
@@ -91,7 +91,7 @@ const UserWisePetitions = (props) => {
             var _userObject = obj;
         var service = new Services(); 
                 const body = {
-                  TypeId: 6,
+                  TypeId: 10,
                   UserId: _userObject.ID,
                   FilterId: _userObject.stateid, 
                   FilterText: ''
@@ -166,29 +166,13 @@ const UserWisePetitions = (props) => {
                           underlineColor="transparent" 
                         />
                                 </View>
-                                <View style={{flexDirection:"row",alignItems:"center",width:wp('90%'),marginVertical:hp('1%'),paddingHorizontal:wp('2%')}}> 
-                                <View style={{flexDirection:"row",alignItems:"center"}}>
-                                        <Text style={[styles.up_rank,{color:"#007bff"}]}>T : Total</Text>
-                                        <Text style={[styles.up_rank,{color:"#29A500"}]}>N : New</Text>
-                                        <Text style={[styles.up_rank,{color:"#e0a800"}]}>A : Assigned</Text>
-                                        <Text style={[styles.up_rank,{color:"#c82333"}]}>R : Rejected</Text>
-                                        <Text style={[styles.up_rank,{color:"green"}]}>C : Completed</Text>
-                                        </View> 
-                                    </View>
-                                    <View style={{flexDirection:"row",alignItems:"center",width:wp('90%'),marginVertical:hp('1%'),paddingHorizontal:wp('2%')}}> 
-                                          <View style={{flexDirection:"row",alignItems:"center"}}>
-                                        <Text style={[styles.up_rank,{color:"#007bff"}]}>O : On-Hold</Text>
-                                        <Text style={[styles.up_rank,{color:"#29A500"}]}>I : InProgress</Text> 
-                                        <Text style={[styles.up_rank,{color:"#4f77f0"}]}>AC : Acknowledged</Text> 
-                                        </View>
-                                        </View>
+                                 
                                     <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#000" />} > 
                                 <View style={{backgroundColor:"#fff",paddingBottom:hp('8%')}}>
                         {userwise != null && userwise.map((item, index) => (
                           
-                          <TouchableOpacity  
-                          onPress={() => { gotoViewlist(item.id) }} key={index}>  
+                          <TouchableOpacity   key={index}>  
                            
                                 <View style={styles.div_bg} key={index}> 
                                  <View  key={index} style={{width:wp('95%'),paddingHorizontal:wp('4%'),paddingVertical:hp("2%"),flexDirection:'row',justifyContent:"space-between",alignItems:'center'}}>
@@ -198,20 +182,10 @@ const UserWisePetitions = (props) => {
                                 <Text style={UserLabel.roletext_spa} ellipsizeMode='tail' numberOfLines={1}>{ '(' + item.SPA + ')'}</Text> 
                                 <Text style={UserLabel.roletext}>Rank : {index+1}  </Text>
                                 </View>
-                                <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
-                                <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>T : {item.total}</Text> 
-                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>N : {item.New}</Text> 
-                                <Text style={[UserLabel.roletext,{color:"#e0a800"}]} ellipsizeMode='tail' numberOfLines={1}>A : {item.Assigned}</Text>
-                                <Text style={[UserLabel.roletext,{color:"#c82333"}]} ellipsizeMode='tail' numberOfLines={1}>R : {item.Rejected}</Text>
-                                <Text style={[UserLabel.roletext,{color:"green"}]} ellipsizeMode='tail' numberOfLines={1}>C : {item.Completed}</Text>
+                                <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}> 
+                                <Text style={[UserLabel.roletext,{color:"green"}]} ellipsizeMode='tail' numberOfLines={1}>Completed : {item.Completed}</Text>
                                 </View>
-                                <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
-                                <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>O : {item["On-Hold"]}</Text> 
-                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>I : {item.InProgress}</Text>  
-                                <Text style={[UserLabel.roletext,{color:"#4f77f0"}]} ellipsizeMode='tail' numberOfLines={1}>AC : {item.Acknowledged}</Text> 
-                                  <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
-                                  <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
-                                </View>
+                                
 
                                 </View> 
                                 </View>
@@ -237,7 +211,7 @@ const UserWisePetitions = (props) => {
     )
 
 }
-export default UserWisePetitions
+export default CompletedPetitions
 
 const styles = StyleSheet.create({
     input: { 

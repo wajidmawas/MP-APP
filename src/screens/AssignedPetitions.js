@@ -27,7 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Services from '../actions/services'; 
 import NetInfo from '@react-native-community/netinfo';
 
-const UserWisePetitions = (props) => {
+const AssignedPetitions = (props) => {
     const [onlineplayers, setonlineplayers] = useState(0);
     const [viewHide, setviewHide] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
@@ -91,10 +91,10 @@ const UserWisePetitions = (props) => {
             var _userObject = obj;
         var service = new Services(); 
                 const body = {
-                  TypeId: 6,
+                  TypeId: 8,
                   UserId: _userObject.ID,
-                  FilterId: _userObject.stateid, 
-                  FilterText: ''
+                  FilterId: _userObject.stateid,
+                  FilterText: 'TOTAL'
               };  
                 service.postData('/_getMasters', body).then(data => {
                     setVal(false) 
@@ -196,7 +196,7 @@ const UserWisePetitions = (props) => {
                                 <View style={{flexDirection:"row", alignItems:"center",justifyContent:"space-between",width:("80%")}}> 
                                 <Text style={UserLabel.roletext} ellipsizeMode='tail' numberOfLines={1}>{item.name}</Text> 
                                 <Text style={UserLabel.roletext_spa} ellipsizeMode='tail' numberOfLines={1}>{ '(' + item.SPA + ')'}</Text> 
-                                <Text style={UserLabel.roletext}>Rank : {index+1}  </Text>
+                                
                                 </View>
                                 <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
                                 <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>T : {item.total}</Text> 
@@ -208,7 +208,7 @@ const UserWisePetitions = (props) => {
                                 <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
                                 <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>O : {item["On-Hold"]}</Text> 
                                 <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>I : {item.InProgress}</Text>  
-                                <Text style={[UserLabel.roletext,{color:"#4f77f0"}]} ellipsizeMode='tail' numberOfLines={1}>AC : {item.Acknowledged}</Text> 
+                                <Text style={[UserLabel.roletext,{color:"#4f77f0"}]} ellipsizeMode='tail' numberOfLines={1}>AC : {item.Acknowledged}</Text>  
                                   <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
                                   <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
                                 </View>
@@ -237,7 +237,7 @@ const UserWisePetitions = (props) => {
     )
 
 }
-export default UserWisePetitions
+export default AssignedPetitions
 
 const styles = StyleSheet.create({
     input: { 

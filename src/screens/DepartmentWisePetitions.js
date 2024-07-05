@@ -93,7 +93,7 @@ const DepartmentWisePetitions = (props) => {
                 const body = {
                   TypeId: 7,
                   UserId: _userObject.ID,
-                  FilterId: _userObject.State,
+                  FilterId: _userObject.stateid,
                   FilterText: ''
               };  
                 service.postData('/_getMasters', body).then(data => {
@@ -173,6 +173,7 @@ const DepartmentWisePetitions = (props) => {
                                           <View style={{flexDirection:"row",alignItems:"center"}}>
                                         <Text style={[styles.up_rank,{color:"#007bff"}]}>O : On-Hold</Text>
                                         <Text style={[styles.up_rank,{color:"#29A500"}]}>I : InProgress</Text> 
+                                        <Text style={[styles.up_rank,{color:"#4f77f0"}]}>AC : Acknowledged</Text> 
                                         </View>
                                         </View>
                                     <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
@@ -197,7 +198,7 @@ const DepartmentWisePetitions = (props) => {
                                 <View style={{flexDirection:"row",paddingTop:hp('1%'), alignItems:"center",justifyContent:"space-between",width:("80%")}}>
                                 <Text style={[UserLabel.roletext,{color:"#007bff"}]} ellipsizeMode='tail' numberOfLines={1}>O : {item["On-Hold"]}</Text> 
                                 <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}>I : {item.InProgress}</Text>  
-                                <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
+                                <Text style={[UserLabel.roletext,{color:"#4f77f0"}]} ellipsizeMode='tail' numberOfLines={1}>AC : {item.Acknowledged}</Text>
                                   <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
                                   <Text style={UserLabel.roletext_verified} ellipsizeMode='tail' numberOfLines={1}></Text>  
                                 </View>

@@ -38,6 +38,9 @@ const AddMember = (props) => {
   const [MemberName, setMemberName] = useState({ value: '', error: '' })
   const [PTitle, setPTitle] = useState({ value: '', error: '' })
   const [PDesc, setPDesc] = useState({ value: '', error: '' })
+  const [UserList, setUserList] = React.useState("")
+  const [AllUserList, setAllUserList] = React.useState("")
+  const [selectedUser, setselectedUser] = React.useState("")
   const [storeState, dispatch] = useContext(AppContext);
   const [val, setVal] = useState(false);
   const [AssemblyList, setAssemblyList] = useState([])
@@ -217,9 +220,9 @@ const onRecordingStatusUpdate =async(e)=>{
         const body = {
           TypeId: 1,
           UserId: _userObject.ID,
-          FilterId: _userObject.State,
+          FilterId: _userObject.stateid,
           FilterText: ''
-        };
+        }; 
         service.postData('/_getMasters', body).then(data => {
           setVal(false)
           if (data == null || data == "") {
@@ -236,13 +239,14 @@ const onRecordingStatusUpdate =async(e)=>{
             resonseData.response["Table"].map((myValue, myIndex) => {
               _filteredList.push(myValue.dept);
             });
-            setAllDeptList(resonseData.response["Table"])
+            setAllDeptList(resonseData.response["Table"]) 
+            setAllUserList(resonseData.response["Table1"])
              setDeptList(_filteredList)
-            // let assembly = resonseData.response["Table"].filter(a => a.AssemblyID == _userObject.Assembly);
-            // if (assembly != null) {
-            //   setDefaultAssembly({"location": assembly[0].AssemblyName});
-            //   SelectedAssembly({"location": assembly[0].AssemblyName});
-            // }
+             _filteredList = [];
+             resonseData.response["Table1"].map((myValue, myIndex) => {
+               _filteredList.push(myValue.Name);
+             });  
+             setUserList(_filteredList);  
           }
         });
       }
@@ -254,7 +258,7 @@ const onRecordingStatusUpdate =async(e)=>{
 
   const SavePetition = async () => {
     let deptID = 0;
-    
+    let userID = 0;
     if(DeptSelected!=null && DeptSelected!=undefined && DeptSelected!="")
     {
     let assembly = AllDeptList.filter(a => a.dept == DeptSelected);  
@@ -262,11 +266,15 @@ const onRecordingStatusUpdate =async(e)=>{
       deptID = assembly[0].id;
     }
   } 
-    if (DeptSelected === '' || DeptSelected === undefined
-      || DeptSelected === null || deptID === 0) {
-      notifyMessage('Please select dept')
+  if(selectedUser!=null && selectedUser!=undefined && selectedUser!="")
+    {
+    let assembly = AllUserList.filter(a => a.Name == selectedUser);  
+    if (assembly != null) {
+      userID = assembly[0].id;
     }
-    else if (PTitle.value === '' || PTitle.value === undefined
+  }
+
+   if (PTitle.value === '' || PTitle.value === undefined
       || PTitle.value === null) {
       notifyMessage('Please enter title')
     }
@@ -274,6 +282,14 @@ const onRecordingStatusUpdate =async(e)=>{
       || PDesc.value === null ) {
       notifyMessage('Please enter summary')
     }    
+    // else if (selectedUser === '' || selectedUser === undefined
+    //   || selectedUser === null || userID === 0) {
+    //   notifyMessage('Please select user to assign')
+    // } 
+    else if (DeptSelected === '' || DeptSelected === undefined
+      || DeptSelected === null || deptID === 0) {
+      notifyMessage('Please select dept')
+    }  
     else {
       var service = new Services(); 
               var payload = new FormData();
@@ -282,6 +298,7 @@ const onRecordingStatusUpdate =async(e)=>{
                 payload.append('dept', deptID);  
                 payload.append('desc', PDesc.value); 
                  payload.append('UserId', userObject.ID);  
+                 payload.append('AssignUser', userID);  
                 payload.append('lat', location != undefined && location != null && location.coords != null ? location.coords.latitude : "");
                 payload.append('lon', location != undefined && location != null && location.coords != null ? location.coords.longitude : "");
                 if (AttachmentPath != null && AttachmentPath != '' && AttachmentPath.file != '') {
@@ -369,6 +386,7 @@ const onRecordingStatusUpdate =async(e)=>{
                         errorText={PTitle.error}
                       />
                     </View>
+                 
                     <View style={{ width: ('100%'), marginVertical: wp("1%"),  flexDirection: "column" }}>
                    
                       <TextInput
@@ -376,8 +394,7 @@ const onRecordingStatusUpdate =async(e)=>{
                         underlineColor="transparent"
                         returnKeyType="next"
                         outlineColor="#fff"
-                        placeholder="Description"
-                        autoCapitalize='characters' 
+                        placeholder="Description" 
                         value={PDesc.value}
                         style={styles.input}
                         selectionColor={'#000'} 
@@ -386,9 +403,16 @@ const onRecordingStatusUpdate =async(e)=>{
                         errorText={PDesc.error}
                       />
                     </View>
+                    <View style={{ width: ('100%'), marginVertical: wp("1%"),   flexDirection: "column" }}> 
+                                    <HashedDropdown dropdownName="Assign User" style={styles.input}
+                                            onSelect={(selectedItem, index) => setselectedUser(selectedItem)}
+                                            dropdownList={UserList} type="Dept" />
+                                         
+                                    </View>
+
                     <View style={{ width: ('100%'), marginVertical: wp("1%"),   flexDirection: "column" }}>
                      
-                    <HashedDropdown dropdownName="Select" style={styles.input}
+                    <HashedDropdown dropdownName="Select Dept" style={styles.input}
                                             onSelect={(selectedItem, index) => setDeptSelected(selectedItem)}
                                             dropdownList={DeptList} type="Dept" />
                     </View>
@@ -499,8 +523,7 @@ const styles = StyleSheet.create({
     width: ('100%'),
     flexDirection: 'column', 
     alignItems: 'center', 
-    backgroundColor: "#fff", 
-    height: hp('100%'),
+    backgroundColor: "#fff",  
     borderRadius: 10,
     paddingTop:20,
     paddingHorizontal:wp('2%')
