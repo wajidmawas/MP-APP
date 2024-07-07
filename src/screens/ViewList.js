@@ -68,6 +68,7 @@ const ViewList = (props) => {
     const [fillIsmobile, setfillIsmobile] = React.useState(false)
     const [location, setLocation] = useState(null);
     const [ModalTitle, setModalTitle] = React.useState("")
+    const [ModalDesc, setModalDesc] = React.useState("")
     const [PID, setPID] = React.useState(0)
     const [AllTables, setTables] = React.useState("")
     const [selectedStatus, setselectedStatus] = React.useState("")
@@ -296,6 +297,7 @@ const ViewList = (props) => {
     }
     const showdetails = (item) => { 
         setModalTitle(item.title);
+        setModalDesc(item.description);
         setPID(item.id); 
         setPstatus(item.status); 
         setPImage(item.attachment);
@@ -407,11 +409,11 @@ else{
                 <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
 
                     <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
-                        <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
+                        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
-                        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
+                        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
 
                     </TouchableOpacity>
                 </View>
@@ -441,16 +443,16 @@ else{
   <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
        
-      <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'70%' }}>
+      <View style={{ flexDirection: "column",paddingHorizontal: 10,width:'100%' }}>
       <Text style={{ fontSize: wp('4.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.title}</Text>
-      <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.description}</Text>
+      <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular",paddingVertical:hp('1%')  }} numberOfLines={1} ellipsizeMode="tail">{item.description}</Text>
   </View>
-  <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'30%' }}>
+ 
+  </View> 
+  <View style={{ width: wp('90%'),flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+  <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'100%',marginBottom:hp('4%') }}>
       <Text style={{ fontSize: wp('2.5%'), color: "#383838", fontFamily: "InterBold" }}>Assigned To: {item.Assigned}</Text> 
   </View>
-  </View> 
-  <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
- 
 
 <View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
 <View style={{ flexDirection: "row",alignItems:'center',width:'33%' }}> 
@@ -492,14 +494,16 @@ else{
                     }}>
                     <View style={styles.centeredView}>
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                            <View style={styles.modalView}>
+                            <View style={[styles.modalView]}>
                                 <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('100%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
                                     <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>{ModalTitle}</Text>
                                     <TouchableOpacity style={{ backgroundColor: "#ccc" }} onPress={() => { closemodal() }} >
                                         <Icon name="close" size={wp('6%')} color={"#000"} />
                                     </TouchableOpacity>
                                 </View>
-
+                                <View style={{ width: ('100%'),paddingBottom:hp('2%')}}>
+                                    <Text style={{ fontFamily: 'InterRegular', color: "#333", fontSize: wp('3.5%') }}>{ModalDesc}</Text>
+                                </View>
                                 <ScrollView style={{ width: '100%' }}> 
                                    
         <View style={{width:'100%',height:100,alignItems:'flex-start',marginBottom:hp('2%')}}> 
@@ -527,14 +531,14 @@ else{
         {ActivitiesList != null && ActivitiesList != undefined && ActivitiesList.length>0 && ActivitiesList.map((item, index) => (
  <> 
  <View style={styles.div_bg} >
-  <View style={{ width: wp('90%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+  <View style={{ width: ('100%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
        
       <View style={{ flexDirection: "column", paddingHorizontal: 10,width:'100%' }}> 
       <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular" }}>{item.comments}</Text>
   </View>
   </View> 
-  <View style={{ width: wp('90%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+  <View style={{ width: ('100%'),marginTop:hp('3%'), flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
 
 
 <View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
@@ -580,7 +584,7 @@ else{
                                     </View>
 }
 {AttachmentPath == null || AttachmentPath.fileName == '' &&
-                                        <View style={{ width: ('100%'), marginBottom: 15 }}>
+                                        <View style={{ width: ('100%'), marginBottom: 15,justifyContent:'center',alignItems:'center' }}>
                     <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
                    
                     <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  
@@ -620,7 +624,7 @@ else{
                                          
                                     </View>
                                      
-                                    <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  marginTop: 0,bottom:wp('5%'), paddingHorizontal: wp('5%') }}>
+                                    <View style={{ width:'100%',flexDirection: 'row', textAlign:'center',alignItems:'center',justifyContent:'center',  paddingHorizontal: wp('5%') }}>
 
 <TouchableOpacity style={styles.button_submit} 
 onPress={() => { SubmitStatus() }} > 
@@ -724,9 +728,10 @@ const styles = StyleSheet.create({
     modalView: {
        
         paddingTop: hp('6%'),
-        width: wp('95%'),
+        width: ('100%'),
         backgroundColor: "white",
         borderRadius: 20,
+        height:'100%',
         padding: ('4%'), 
         justifyContent: 'flex-start',
     },
@@ -736,13 +741,14 @@ const styles = StyleSheet.create({
         zIndex: 999,
     },
     div_bg: {
-        width: wp('90%'),
+        width: ('100%'),
         flexDirection: 'column',
         justifyContent: "flex-start",
         alignItems: 'center',
         marginTop: hp('1%'),
         paddingVertical: hp('1%'),
         marginBottom:hp('1%'),
+        paddingHorizontal:wp('1%'),
         borderRadius: 10,
         backgroundColor: "#f0f3fe",
 
@@ -808,16 +814,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent'
     },
     fieldSet:{ 
-        paddingTop: 20,
+        paddingTop: hp('2%'),
         paddingHorizontal: 10,
         paddingBottom: 10,
         borderRadius: 5,
         borderWidth: 1, 
-        borderColor: '#000'
+        marginTop:hp('1%'),
+        borderColor: '#ccc',
+        marginBottom:50
     },
     legend:{
         position: 'absolute',
         top: -10,
+        paddingHorizontal:10,
         left: 10,
         fontWeight: 'bold',
         backgroundColor: '#FFFFFF'
