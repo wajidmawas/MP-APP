@@ -351,11 +351,11 @@ const onRecordingStatusUpdate =async(e)=>{
       </View>
       <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center" }}>
-        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
-        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
+        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
+        <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
-        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
+        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
 
         </TouchableOpacity>
       </View>

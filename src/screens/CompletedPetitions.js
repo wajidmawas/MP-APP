@@ -138,24 +138,23 @@ const CompletedPetitions = (props) => {
                 {/* <AuthHeader back="0" /> */}
                 <View style={{width:wp("100%"),height:hp('10%'),paddingHorizontal:wp("2%"),flexDirection:"row", alignItems:"center",justifyContent:"space-between"}}>
                <TouchableOpacity onPress={back}  style={{flexDirection:"row", alignItems:"center",}}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
-                        <Text style={{fontSize:wp('5%'),color:"#fff"}}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
+                        <Text style={{fontSize:wp('5%'),color:"#000"}}>Back</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => {  props.navigation.openDrawer() }}   >
-          <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
+          <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
             
         </TouchableOpacity>
                </View>
                 <View style={styles.Container2}>
-                <View >
-                        <View style={styles.top_div_lbl}>
-                            <Text style={{ fontSize: wp('8%'), color: '#fff', fontFamily: 'InterBold' }}>{(userwise != null ? (userwise.reduce((a,v) =>  a = a + v.total , 0 )): 0)}</Text>
-                            
-                        </View>
-                    </View>
-                    <HashedSnackbar visible={isActive} message={message} type={type} close={closeSnackBar} />  
-                        <View style={UserLabel.play_div}> 
-                        
+                <HashedSnackbar visible={isActive} message={message} type={type} close={closeSnackBar} />  
+                <View style={UserLabel.play_div}> 
+                <View style={styles.top_div}>
+                                <Text style={{fontFamily:"InterRegular"}}>Total Petitions</Text>
+                                <Text style={{fontFamily:"InterBold",fontSize:wp("10%"),color:"#00334f", marginTop:hp("2%"),fontWeight:"bold"}}>{(userwise != null ? (userwise.reduce((a,v) =>  a = a + v.total , 0 )): 0)}</Text> 
+                                </View> 
+              
+                     
                                 <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",width:('90%'),marginBottom:hp('1%'),paddingHorizontal:wp('2%')}}>
                                 <TextInput  
          theme={{ colors: { primary: 'transparent',text: '#323232'  } }}

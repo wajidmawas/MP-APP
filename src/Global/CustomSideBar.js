@@ -138,6 +138,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                         break;   
                         case 'User Wise Rank':
                                 props.nav.navigate("UserWiseRank");
+                                break;       
                          case 'Completed Petitions':
                                 props.nav.navigate("CompletedPetitions");
                         break;       

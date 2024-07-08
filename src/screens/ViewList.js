@@ -409,11 +409,11 @@ else{
                 <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
 
                     <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
-                        <Text style={{ fontSize: wp('5%'), color: "#fff" }}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
+                        <Text style={{ fontSize: wp('5%'), color: "#000" }}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { props.navigation.openDrawer() }}   >
-                        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#fff'} size={wp('7%')}></Icon>
+                        <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#000'} size={wp('7%')}></Icon>
 
                     </TouchableOpacity>
                 </View>
@@ -430,7 +430,12 @@ else{
                             </TouchableOpacity>
                         </View>
                     </View>
+                 
                     <View style={UserLabel.play_div}>
+                    <View style={styles.top_div}>
+                                <Text style={{fontFamily:"InterRegular"}}>Total Petitions</Text>
+                                <Text style={{fontFamily:"InterBold",fontSize:wp("10%"),color:"#00334f", marginTop:hp("2%"),fontWeight:"bold"}}>{(PetitionList != null ?   PetitionList.length   : 0)}</Text> 
+                                </View> 
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <>
                                 <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
@@ -1031,7 +1036,7 @@ const UserLabel = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: "#fff",
-        marginTop: hp('5%'),
+        marginTop: hp('2%'),
         height: hp('70%'),
         borderRadius: 10
     },

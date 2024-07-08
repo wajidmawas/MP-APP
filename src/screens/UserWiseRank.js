@@ -53,7 +53,7 @@ const UserWiseRank = (props) => {
  
     useEffect(() => { 
         onLoad();
-        setRefreshing(true);  
+        setRefreshing(true);   
         getuserlist();
         //console.log("Home page Ended:");
     }, [])
@@ -84,8 +84,8 @@ const UserWiseRank = (props) => {
         if(_text=="" || _text==null || _text==undefined)
         _fList=Alluserwise;
         setuserwise(_fList);
-              }
-    getuserlist = async () =>{
+}
+    getuserlist = async () =>{ 
         await AsyncStorage.getItem("userSession").then(async (value) => {
             let obj = JSON.parse(value);
             var _userObject = obj;
@@ -96,6 +96,7 @@ const UserWiseRank = (props) => {
                   FilterId: _userObject.stateid, 
                   FilterText: ''
               };  
+            
                 service.postData('/_getMasters', body).then(data => {
                     setVal(false) 
                     setRefreshing(false);
