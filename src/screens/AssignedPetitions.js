@@ -127,11 +127,9 @@ const AssignedPetitions = (props) => {
     return (
 
 
-        <KeyboardAvoidingView style={styles.container} >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Container>
           <>
-
-<Image style={styles.main_bg} source={require('../assets/images/round.png')}/>
+ 
            
                 <View style={styles.StatusBar}>
                     <StatusBar translucent barStyle="dark-content" />
@@ -139,8 +137,8 @@ const AssignedPetitions = (props) => {
                 {/* <AuthHeader back="0" /> */}
                 <View style={{width:wp("100%"),height:hp('10%'),paddingHorizontal:wp("2%"),flexDirection:"row", alignItems:"center",justifyContent:"space-between"}}>
                <TouchableOpacity onPress={back}  style={{flexDirection:"row", alignItems:"center",}}>
-                        <Icon name='chevron-left' size={wp('6%')} color={'#000'}></Icon>
-                        <Text style={{fontSize:wp('5%'),color:"#000"}}>Back</Text>
+                        <Icon name='chevron-left' size={wp('6%')} color={'#fff'}></Icon>
+                        <Text style={{fontSize:wp('5%'),color:"#fff"}}>Back</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => {  props.navigation.openDrawer() }}   >
           <Icon onPress={() => { props.navigation.openDrawer() }} name="dots-horizontal" color={'#7F86B2'} size={wp('7%')}></Icon>
@@ -148,13 +146,15 @@ const AssignedPetitions = (props) => {
         </TouchableOpacity>
                </View>
                 <View style={styles.Container2}>
-              
+                <View >
+                        <View style={styles.top_div_lbl}>
+                            <Text style={{ fontSize: wp('8%'), color: '#fff', fontFamily: 'InterBold',paddingLeft:10 }}>{(userwise != null ? (userwise.reduce((a,v) =>  a = a + v.total , 0 )): 0)}</Text>
+                            
+                        </View>
+                    </View>
                     <HashedSnackbar visible={isActive} message={message} type={type} close={closeSnackBar} />  
                         <View style={UserLabel.play_div}> 
-                        <View style={styles.top_div}>
-                                <Text style={{fontFamily:"InterRegular"}}>Total Petitions</Text>
-                                <Text style={{fontFamily:"InterBold",fontSize:wp("10%"),color:"#00334f", marginTop:hp("2%"),fontWeight:"bold"}}>{(userwise != null ? (userwise.reduce((a,v) =>  a = a + v.total , 0 )): 0)}</Text> 
-                                </View>
+                        
                                 <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",width:('90%'),marginBottom:hp('1%'),paddingHorizontal:wp('2%')}}>
                                 <TextInput  
          theme={{ colors: { primary: 'transparent',text: '#323232'  } }}
@@ -229,10 +229,11 @@ const AssignedPetitions = (props) => {
                 </View> 
 
                 </>
-           
-           </TouchableWithoutFeedback>
+                <View style={styles.login_bg}>
+                <Image style={{ width: '100%', resizeMode: 'cover', height: ('100%') }} source={require('../assets/main_bg.png')} />
+            </View> 
 
-   </KeyboardAvoidingView>
+   </Container>
 
     )
 
@@ -240,6 +241,21 @@ const AssignedPetitions = (props) => {
 export default AssignedPetitions
 
 const styles = StyleSheet.create({
+    top_div_lbl: {
+        width: '100%',
+        alignItems: "center",
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    login_bg: {
+        width: wp('100%'),
+        position: 'absolute',
+        top: 0,
+        backgroundColor: "#000",
+        height: hp('100%'),
+        zIndex: -1,
+        left: 0
+    },
     input: { 
         borderTopWidth: 0,
         borderLeftWidth: 0,
