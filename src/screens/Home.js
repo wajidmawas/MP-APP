@@ -107,7 +107,12 @@ const Home = (props) => {
                         setTotalRecords(resonseData.response["Table"]);
                         setdashboardDtls(resonseData.response["Table1"]);
                         var _filteredList = [];
-                        _filteredList.push({ title :"Total",lastFourDigits: resonseData.response["Table2"].length,
+                        var totalCnt=0;
+                        resonseData.response["Table2"].map((myValue, myIndex) => {
+                            totalCnt=totalCnt+myValue.cnt; 
+                          }); 
+
+                        _filteredList.push({ title :"Total",lastFourDigits: totalCnt,
                             cardColor : "orange"
                           });
                         resonseData.response["Table2"].map((myValue, myIndex) => {
