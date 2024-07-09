@@ -56,8 +56,8 @@ const Home = (props) => {
             <LinearGradient
               style={[card_styles.background]}
               colors={[cardColor, cardColor]}
-            >
-              <View   key={item.title}> 
+            > 
+              <View   key={item.title}>
                 <Text style={card_styles.title}>{title}</Text> 
                 <Text style={card_styles.lastFourDigits}>{lastFourDigits}</Text>
               </View>
@@ -106,39 +106,17 @@ const Home = (props) => {
                         
                         setTotalRecords(resonseData.response["Table"]);
                         setdashboardDtls(resonseData.response["Table1"]);
-                        
+                        var _filteredList = [];
+                        _filteredList.push({ title :"Total",lastFourDigits: resonseData.response["Table2"].length,
+                            cardColor : "orange"
+                          });
+                        resonseData.response["Table2"].map((myValue, myIndex) => {
+                          _filteredList.push({ title :myValue.name,lastFourDigits: myValue.cnt,
+                            cardColor : myValue.color
+                          });
+                        }); 
 
-                        SETCARDS_DATA([
-                            {
-                                title: "Total",
-                                lastFourDigits: resonseData.response["Table"][0]["cnt"],
-                                cardColor: COLORS.yellow,
-                            },
-                            {
-                                title: "New",
-                                lastFourDigits: resonseData.response["Table1"].length>0 ?
-                                 resonseData.response["Table1"][0]["New"] : 0,
-                                cardColor: COLORS.green,
-                            },
-                            {
-                                title: "Assigned",
-                                lastFourDigits: resonseData.response["Table1"].length>0 ? 
-                                resonseData.response["Table1"][0]["Assigned"] : 0,
-                                cardColor: COLORS.blue,
-                            },
-                            {
-                                title: "Acknowledged",
-                                lastFourDigits: resonseData.response["Table1"].length>0 ? 
-                                resonseData.response["Table1"][0]["Acknowledged"] : 0,
-                                cardColor: COLORS.black,
-                            },
-                            {
-                                title: "Completed",
-                                lastFourDigits: resonseData.response["Table1"].length>0 ?
-                                resonseData.response["Table1"][0]["Completed"] : 0,
-                                cardColor: COLORS.orange,
-                            },
-                        ]);
+                        SETCARDS_DATA(_filteredList);
                     }
                 });
             }
@@ -256,7 +234,7 @@ const Home = (props) => {
                            
                         </View> */}
 
-                        <View style={[styles.voters_div]}>
+                        {/* <View style={[styles.voters_div]}>
                             <Image style={styles.ann_img} source={require('../assets/announcement.png')} />
 
                             <View style={{ width: wp('50%'), flexDirection: "column", alignItems: 'flex-start', paddingLeft: wp('5%') }}>
@@ -266,17 +244,15 @@ const Home = (props) => {
 
                                 <Text style={{ color: '#383838', fontSize: wp('8%'), fontFamily: 'InterRegular' }}>Today's Challenge</Text>
                             </View>
-                        </View>
+                        </View> */}
 
                         <View style={{ marginVertical: hp('2%'), width: '100%' }}>
                             <Text style={{ color: '#383838', fontFamily: 'InterBold', fontSize: wp('6%'), marginVertical: hp('2%') }}>Petition Status</Text>
                             <FlatList
                                 style={styles.cardsWrapper}
                                 data={CARDS_DATA}
-                                renderItem={In_Cards}
-                                horizontal={true} 
-                                keyExtractor={(item) => item.title}
-                                showsHorizontalScrollIndicator={false}
+                                renderItem={In_Cards} 
+                                keyExtractor={(item) => item.title} 
                                 contentContainerStyle={{ paddingRight: 20 }}
                             />
                         </View>
@@ -316,8 +292,7 @@ export default Home
 
 const styles = StyleSheet.create({
     cardsWrapper: {
-        maxHeight: 170,
-        minHeight: 170,
+        
     },
     edit: {
         borderRadius: 50,
@@ -752,7 +727,7 @@ const UserLabel = StyleSheet.create({
 const card_styles = StyleSheet.create({
     container: {
       marginLeft: 20,
-      width: 150,
+      width: wp('80%'),
       borderRadius: 10,
       shadowColor: '#888',
       shadowOffset: {
@@ -762,6 +737,10 @@ const card_styles = StyleSheet.create({
       shadowOpacity: 0.2,
       shadowRadius: 6,
       elevation: 14, 
+      padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    height:150
     },
     background: {
       position: "absolute",
@@ -773,15 +752,15 @@ const card_styles = StyleSheet.create({
     },  
     title: {
       marginTop: 0,
-      fontSize:widthPercentageToDP('4%'),
+      fontSize:widthPercentageToDP('5%'),
       color:'#fff',
       fontFamily:'InterBold'
     }, 
     lastFourDigits: {
-      marginTop: 26,
-      paddingBottom: 10,
-      textAlign:'right',
-      fontSize:widthPercentageToDP('4%'),
+      marginTop: 15,
+      paddingBottom: 8, 
+      textAlign:'center',
+      fontSize:widthPercentageToDP('8%'),
       color:'#fff',
       fontFamily:'InterBold'
     },

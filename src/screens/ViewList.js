@@ -367,7 +367,7 @@ else{
                     return false;
                 }
                 var resonseData = JSON.parse(data) 
-                if (resonseData.errorCode == -100) {
+                if (resonseData.errorCode == -100 || resonseData.errorCode == -200) {
                     notifyMessage(resonseData.response);
                 }
                 else if (resonseData.errorCode == 200) {

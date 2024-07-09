@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { View, Text, Image, KeyboardAvoidingView,Keyboard, TouchableOpacity, TouchableWithoutFeedback, StatusBar,Alert, StyleSheet,RefreshControl, TouchableHighlight } from 'react-native'
+import { View,Modal, Text, Image, KeyboardAvoidingView,Keyboard, TouchableOpacity, TouchableWithoutFeedback, StatusBar,Alert, StyleSheet,RefreshControl, TouchableHighlight } from 'react-native'
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import AuthHeader from '../components/AuthHeader';
 import Container from '../components/Container';
@@ -32,7 +32,11 @@ const UserWisePetitions = (props) => {
     const [viewHide, setviewHide] = useState(0);
     const [storeState, dispatch] = useContext(AppContext);
     const [val, setVal] = useState(false);
-    const [screenName, setscreenName] = useState("Members");
+    const [screenName, setscreenName] = useState("Members"); 
+    const [modalVisible, setModalVisible] = useState(false)
+   const [Name, setName] = useState({ value: '', error: '' })
+   const [Email, setEmail] = useState({ value: '', error: '' })
+   const [Mobile, setMobile] = useState({ value: '', error: '' })
     const [userObject, setUserObject] = useState({}); 
     const { isActive, type, message, openSnackBar, closeSnackBar } = useSnackbar();
     const [state, setState] = useState({});
@@ -121,9 +125,53 @@ const UserWisePetitions = (props) => {
             params: { screenName: "TOTAL",userid:id }
         })
     }
+    const SaveUser = () => {   
+        if (Name === '' || Name.value === undefined
+            || Name.value === null  || Name.value === "") {
+            notifyMessage('Please enter name')
+          }
+          else  if (Email === '' || Email.value === undefined
+            || Email.value === null || Email.value === "") {
+            notifyMessage('Please enter email')
+          }
+          else  if (Mobile === '' || Mobile.value === undefined
+            || Mobile.value === null || Mobile.value === "") {
+            notifyMessage('Please enter mobile')
+          }
+          else {
+
+            var service = new Services();
+            const body = {
+                TypeId: 5,
+                Mobile: Mobile.value,
+                Email: Email.value,
+                Name: Name.value,
+                UserId: userObject.ID, 
+            }; 
+            service.postData('/_saveUser', body).then(data => {
+
+                if (data == null || data == "") {
+                    openSnackBar("Invalid request object");
+                    return false;
+                }
+                var resonseData = JSON.parse(data) 
+                console.log(data)
+                if (resonseData.errorCode == -200) {
+                    notifyMessage(resonseData.response);
+                }
+                else if (resonseData.errorCode == 200) { 
+                    notifyMessage("Successfully Submitted");
+                    setModalVisible(false)
+                }
+            });
+        }
+    }
     const back = () => {
        props.navigation.replace('DrawerStack', { screen: 'Home' })
       }
+      const addUser = () => {
+            setModalVisible(true)
+       }
     return (
 
 
@@ -150,6 +198,15 @@ const UserWisePetitions = (props) => {
                 <View style={styles.Container2}>
               
                     <HashedSnackbar visible={isActive} message={message} type={type} close={closeSnackBar} />  
+                    <View >
+                        <View style={styles.top_div_lbl}>
+                            <Text style={{ fontSize: wp('8%'), color: '#fff', fontFamily: 'InterBold' }}></Text>
+                            <TouchableOpacity onPress={addUser} style={{ backgroundColor: '#fff', borderRadius: 10, paddingVertical: 10,flexDirection:"row",alignItems:'center', paddingHorizontal: wp('5%') }}>
+                            <Icon name='plus' size={wp('6%')} color={'#5592d9'}></Icon>   
+                            <Text style={{ fontSize: wp('4%'), color: '#5592d9', fontFamily: 'InterBold' }}>Add User</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                         <View style={UserLabel.play_div}> 
                         <View style={styles.top_div}>
                                 <Text style={{fontFamily:"InterRegular"}}>Total Petitions</Text>
@@ -227,7 +284,90 @@ const UserWisePetitions = (props) => {
                         </View>   
                        
                 </View> 
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}>
+                    <View style={styles.centeredView}>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <View style={[styles.modalView]}>
+                                <View style={{ backgroundColor: "#fff", flexDirection: 'row', width: ('100%'), justifyContent: "space-between", alignItems: 'center', marginBottom: hp('3%') }}>
+                                    <Text style={{ fontFamily: 'InterBold', color: "#0080AF", fontSize: wp('5%') }}>Add User</Text>
+                                    <TouchableOpacity style={{ backgroundColor: "#ccc" }} onPress={() => { closemodal() }} >
+                                        <Icon name="close" size={wp('6%')} color={"#000"} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ width: ('100%'),alignContent:'center',flexDirection: "column" }}>
+                    
+                    <TextInput
+                      theme={{ colors: { primary: 'transparent', text: "#00445D" } }}
+                      underlineColor="transparent"
+                      returnKeyType="next"
+                      outlineColor="#fff"
+                      placeholder="Name"
+                      autoCapitalize='characters' 
+                      value={Name.value}
+                      style={styles.input}
+                      selectionColor={'#000'}
+                      maxLength={100}
+                      onChangeText={(text) => setName({ value: text, error: '' })}
+                      error={!!Name.error}
+                      errorText={Name.error}
+                    />
+                  </View>
+                  <View style={{ width: ('100%'),alignContent:'center',flexDirection: "column" }}>
+                    
+                    <TextInput
+                      theme={{ colors: { primary: 'transparent', text: "#00445D" } }}
+                      underlineColor="transparent"
+                      returnKeyType="next"
+                      outlineColor="#fff"
+                      placeholder="Mobile"
+                      autoCapitalize='characters' 
+                      value={Mobile.value}
+                      style={styles.input}
+                      selectionColor={'#000'}
+                      maxLength={100}
+                      onChangeText={(text) => setMobile({ value: text, error: '' })}
+                      error={!!Mobile.error}
+                      errorText={Mobile.error}
+                    />
+                  </View>
+                  <View style={{ width: ('100%'),alignContent:'center',flexDirection: "column" }}>
+                    
+                    <TextInput
+                      theme={{ colors: { primary: 'transparent', text: "#00445D" } }}
+                      underlineColor="transparent"
+                      returnKeyType="next"
+                      outlineColor="#fff"
+                      placeholder="Email" 
+                      value={Email.value}
+                      style={styles.input}
+                      selectionColor={'#000'}
+                      maxLength={100}
+                      onChangeText={(text) => setEmail({ value: text, error: '' })}
+                      error={!!Email.error}
+                      errorText={Email.error}
+                    />
+                  </View>
+                  <View style={{ width: ('100%'), marginBottom: 15,justifyContent:'center',alignItems:'center' }}>
 
+<TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} 
+onPress={() => { SaveUser() }} > 
+       
+      <Text style={styles.button_submit_txt}>
+         Submit </Text>
+     
+</TouchableOpacity>
+
+</View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                </Modal>
                 </>
            
            </TouchableWithoutFeedback>
@@ -240,6 +380,27 @@ const UserWisePetitions = (props) => {
 export default UserWisePetitions
 
 const styles = StyleSheet.create({
+    button_submit_txt:{
+        fontSize:wp('4%'),
+        color:"#fff",
+        marginLeft:5
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0,0,0,0.6)'
+    },
+    modalView: {
+       
+        paddingTop: hp('6%'),
+        width: ('100%'),
+        backgroundColor: "white",
+        borderRadius: 20,
+        height:'100%',
+        padding: ('4%'), 
+        justifyContent: 'flex-start',
+    },
     input: { 
         borderTopWidth: 0,
         borderLeftWidth: 0,
@@ -313,10 +474,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent'
     },
     button_submit: {
-        width: wp('40%'),
-        height: hp('7%'),
-        marginHorizontal: wp('0.2%'),
-        borderWidth: 3,
+        width: wp('60%'),
+        height: hp('7%'), 
+        borderRadius: 10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center', 
+        backgroundColor:'#5592d9'
     },
 
 })
