@@ -241,7 +241,7 @@ const UserWisePetitions = (props) => {
                                         </View>
                                     <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#000" />} > 
-                                <View style={{backgroundColor:"#fff",paddingBottom:hp('8%')}}>
+                                <View style={{backgroundColor:"#fff",paddingBottom:hp('20%')}}>
                         {userwise != null && userwise.map((item, index) => (
                           
                           <TouchableOpacity  

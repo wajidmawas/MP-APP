@@ -56,6 +56,7 @@ const AddMember = (props) => {
   const [VerifiedList, setVerifiedList] = useState(null);
   const [playingStatus, setplayingStatus] = useState({ playingStatus: ""});  
   const [AttachmentPath, setAttachmentPath] = useState({ file: '', fileName: '' });
+  const [AttachmentList, setAttachmentList] = useState(null);
   const [DeptList, setDeptList] = React.useState("")
   const [AllDeptList, setAllDeptList] = React.useState("")
     const [recording, setRecording] = React.useState();
@@ -96,12 +97,18 @@ const AddMember = (props) => {
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         aspect: [4, 3],
+        allowsMultipleSelection: true,
         quality: 1,
     });
 
 
 
     if (!result.canceled) {
+      var files=[];
+      result.assets.map((myValue, myIndex) => {
+        files.push({ file: myValue.uri, fileName: myValue.uri.split("/").slice(-1)[0],Dur:0 })
+      });
+      setAttachmentList(files); 
         // let image = await ImageManipulator.manipulateAsync(result.uri,[{resize:{width:1080,height:720}}],{compress: 0})
         let fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
         setAttachmentPath({ file: result.assets[0].uri, fileName: result.assets[0].uri.split("/").slice(-1)[0],Dur:0 })
@@ -192,7 +199,7 @@ const millisToMinutesAndSeconds = (millis) => {
 }
 const deleteAttachment = async (flg) => {
   if (flg == 1) {
-     
+     setAttachmentList([]);
       setAttachmentPath({ file: "", fileName: "" })
   }
   else {
@@ -206,6 +213,7 @@ const deleteAttachment = async (flg) => {
      await sound.stopAndUnloadAsync();
   }
 }
+
 const onRecordingStatusUpdate =async(e)=>{
     //console.log("recording update:" + Math.floor((e.durationMillis/1000) % 60))
     setrecordingDuration(Math.floor((e.durationMillis/1000) % 60)+1 + " sec[s]")
@@ -317,9 +325,7 @@ const onRecordingStatusUpdate =async(e)=>{
                         name: "test" ,
                     });
 
-                }
-
-                console.log(payload)
+                } 
       service.postFormData('/_SavePetitionDetails', payload).then(data => {
         setVal(false)
         if (data == null || data == "") {
@@ -331,14 +337,58 @@ const onRecordingStatusUpdate =async(e)=>{
           notifyMessage(resonseData.message);
         }
         else if (resonseData.errorCode == 200) {
-          notifyMessage("Successfully submitted");
-          props.navigation.replace('DrawerStack', { screen: 'Home' })
+          notifyMessage("Successfully submitted"); 
+         UploadMediaToServer(resonseData.response["Table"][0]["id"]) 
         }
       });
 
 
     }
   }
+  const UploadMediaToServer = (Pid) => {
+
+
+    var service = new Services();
+    
+    if (AttachmentList != null && AttachmentList.length > 0) {
+      AttachmentList.map((myValue, myIndex) => {
+            var payload = new FormData(); 
+            if (myValue.file != null && myValue.file != '') {
+              let uriParts = myValue.file.split('.');
+              let fileType = uriParts[uriParts.length - 1];
+              payload.append('id',Pid);
+                payload.append('imagePath2', {
+                    uri: myValue.file,
+                    type: 'image/x-'+ fileType,
+                    name: "test" + myIndex
+                });
+            } 
+            service.postFormData('/upload_attachments', payload).then(data => {
+              setVal(false)
+              if (data == null || data == "") {
+                openSnackBar("Invalid request object");
+                return false;
+              }
+              var resonseData = JSON.parse(data) 
+              console.log(resonseData);
+              if (resonseData.errorCode == -200) {
+                notifyMessage(resonseData.message);
+              }
+              else if (resonseData.errorCode == 200) {
+                notifyMessage('File uploaded ' + (myIndex+1) + " of " + AttachmentList.length);
+                if(myIndex+1==AttachmentList.length)
+                  {
+                    props.navigation.replace('DrawerStack', { screen: 'Home' })
+                  }
+               
+                }
+            });
+        });
+
+
+    }
+
+}
   const back = () => {
     props.navigation.replace('DrawerStack', { screen: 'Home' })
   }
@@ -419,16 +469,24 @@ const onRecordingStatusUpdate =async(e)=>{
                                             dropdownList={DeptList} type="Dept" />
                     </View>
 
-                    <View style={{flexDirection:'column', width: ('100%'),alignItems:'center', marginVertical: wp("1%"),marginTop:wp('30%')}}>
+                    <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#5592d9'}]}
+                   onPress={() => { SavePetition() }} 
+                                                >  
+                                                <Icon name='floppy' size={wp('6%')} color={'#fff'}></Icon>
+                                                       <Text style={styles.button_submit_txt}>
+                                                           SUBMIT </Text>
+                                                     
+                                                </TouchableOpacity>
                     
                     {AttachmentPath == null || AttachmentPath.fileName == '' &&
-                    <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
+                   <View style={{flexDirection:'column', width: ('100%'),alignItems:'center', marginVertical: wp("1%"),marginTop:wp('10%')}}>
+                     <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
                    
                     <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  
-                    <Text style={styles.button_submit_txt}>Upload attachment</Text>
+                    <Text style={styles.button_submit_txt}>UPLOAD ATTACHMENT</Text>
                   
-                  </TouchableOpacity>
-                  }
+                  </TouchableOpacity></View>
+                  } 
                   
 {AudioPath == null || AudioPath.fileName == '' &&
                   <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#2fc75c'}]}
@@ -450,17 +508,23 @@ const onRecordingStatusUpdate =async(e)=>{
                                          {AttachmentPath != null && AttachmentPath.fileName != '' &&
                                         <>
                                             <View style={styles.grid_title}>
-                                                <Text style={styles.grid_title_text}>Attachment</Text></View>
-                                            <View style={styles.grid_2}>
-                                            <Icon name='attachment' size={wp('6%')} color={'#ff7900'}></Icon>
-                                                <Text style={styles.attach_file} ellipsizeMode='tail' numberOfLines={1} >
-                                                    {AttachmentPath != null && AttachmentPath.fileName != null ? AttachmentPath.fileName : ""}
-
-                                                </Text>
-                                                <TouchableOpacity style={styles.attach_file_icon} onPress={() => { deleteAttachment(1) }}>
+                                                <Text style={styles.grid_title_text}>Attachment 
+                                                  
+                                                <TouchableOpacity style={[styles.attach_file_icon]} onPress={() => { deleteAttachment(1) }}>
                                                 <Icon name='delete-circle' size={wp('6%')} color={'#d95554'}></Icon>
                                                 </TouchableOpacity>
-                                            </View></>
+                                                </Text></View>
+                                                {AttachmentList != null && AttachmentList.map((item, index) => (
+                                            <View style={styles.grid_2} key={index}>
+                                            <Icon name='attachment' size={wp('6%')} color={'#ff7900'}></Icon>
+                                                <Text style={styles.attach_file} ellipsizeMode='tail' numberOfLines={1} >
+                                                    {item != null && item.fileName != null ? item.fileName : ""}
+
+                                                </Text>
+                                                
+                                            </View>
+                                                ))}
+                                            </>
                                     }
                                     {AudioPath != null && AudioPath.fileName != '' &&
                                         <>
@@ -490,16 +554,9 @@ const onRecordingStatusUpdate =async(e)=>{
                                                 </TouchableOpacity>
                                             </View></>
                                     }
-                   <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#5592d9'}]}
-                   onPress={() => { SavePetition() }} 
-                                                >  
-                                                <Icon name='floppy' size={wp('6%')} color={'#fff'}></Icon>
-                                                       <Text style={styles.button_submit_txt}>
-                                                           Submit </Text>
-                                                     
-                                                </TouchableOpacity>
                   
-                    </View>
+                  
+                   
                   </>
 
 
@@ -736,14 +793,13 @@ grid_2: {
   flexDirection: 'row',  
   backgroundColor: '#fff', 
   alignItems: 'center',
-  borderRadius: 30,
-  marginBottom:20,
+  borderRadius: 30, 
   justifyContent: 'space-between',
+  
 },
 grid_title: {
   display: 'flex',  
-  borderRadius: 50,
-  marginBottom: 20,
+  borderRadius: 50, 
 
 },
 grid_title_text: {
@@ -802,7 +858,7 @@ button_submit: {
   flexDirection:'row',
   alignItems:'center',
   justifyContent:'center',
-  backgroundColor:'#5592d9'
+  backgroundColor:'#5592d9',
 },
 button_submit_txt:{
   fontSize:wp('4%'),
