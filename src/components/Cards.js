@@ -40,7 +40,6 @@ export default Cards;
 const styles = StyleSheet.create({
   container: {
     marginLeft: 20,
-    width: 150,
     borderRadius: 10,
     shadowColor: '#888',
     shadowOffset: {
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     borderRadius: 10, 
-    padding:10
+    padding:10,
   },  
   title: {
     marginTop: 0,

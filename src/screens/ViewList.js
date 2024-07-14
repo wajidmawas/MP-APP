@@ -403,7 +403,7 @@ else{
             }
             <>
                 <View style={styles.StatusBar}>
-                    <StatusBar translucent barStyle="dark-content" />
+                    <StatusBar translucent barStyle="light-content" />
                 </View>
                 {/* <AuthHeader back="0" /> */}
                 <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>

@@ -203,7 +203,7 @@ const Home = (props) => {
 
         <Container>
             <View style={styles.StatusBar}>
-                <StatusBar translucent barStyle="dark-content" />
+                <StatusBar translucent barStyle="light-content" />
             </View>
             <View style={{ width: wp("100%"), height: hp('4%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <TouchableOpacity onPress={() => { props.navigation.openDrawer() }} style={{ flexDirection: "row", alignItems: "center", }}>
@@ -251,7 +251,7 @@ const Home = (props) => {
                             </View>
                         </View> */}
 
-                        <View style={{ marginVertical: hp('2%'), width: '100%' }}>
+                        <View style={{ marginVertical: hp('2%'), width: '100%', }}>
                             <Text style={{ color: '#383838', fontFamily: 'InterBold', fontSize: wp('6%'), marginVertical: hp('2%') }}>Petition Status</Text>
                             <FlatList
                                 style={styles.cardsWrapper}
@@ -296,9 +296,7 @@ const Home = (props) => {
 export default Home
 
 const styles = StyleSheet.create({
-    cardsWrapper: {
-        
-    },
+    
     edit: {
         borderRadius: 50,
         backgroundColor: "#17B0E8",
@@ -731,8 +729,7 @@ const UserLabel = StyleSheet.create({
 
 const card_styles = StyleSheet.create({
     container: {
-      marginLeft: 20,
-      width: wp('80%'),
+      width: ('96%'),
       borderRadius: 10,
       shadowColor: '#888',
       shadowOffset: {
@@ -743,9 +740,9 @@ const card_styles = StyleSheet.create({
       shadowRadius: 6,
       elevation: 14, 
       padding: 20,
-    marginVertical: 8,
+      marginBottom:hp('2%'),
     marginHorizontal: 16,
-    height:150
+    height:120
     },
     background: {
       position: "absolute",

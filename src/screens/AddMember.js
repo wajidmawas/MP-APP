@@ -397,7 +397,7 @@ const onRecordingStatusUpdate =async(e)=>{
 
 <>
       <View style={styles.StatusBar} >
-        <StatusBar translucent barStyle="dark-content" />
+        <StatusBar translucent barStyle="light-content" />
       </View>
       <View style={{ width: wp("100%"), height: hp('10%'), paddingHorizontal: wp("2%"), flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <TouchableOpacity onPress={back} style={{ flexDirection: "row", alignItems: "center" }}>
@@ -409,14 +409,13 @@ const onRecordingStatusUpdate =async(e)=>{
 
         </TouchableOpacity>
       </View>
-      <KeyboardAwareScrollView>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <> 
             <View style={styles.container}>
 
-              <KeyboardAwareScrollView onPress={Keyboard.dismiss} style={{ width: '100%' }}>
                 <View style={styles.play_div}>
-                  
+                <KeyboardAwareScrollView style={{width:'100%'}}>
+                
                   <> 
                     <View style={{ width: ('100%'),alignContent:'center',flexDirection: "column" }}>
                     
@@ -469,7 +468,7 @@ const onRecordingStatusUpdate =async(e)=>{
                                             dropdownList={DeptList} type="Dept" />
                     </View>
 
-                    <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#5592d9'}]}
+                    <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#5592d9',width:'100%'}]}
                    onPress={() => { SavePetition() }} 
                                                 >  
                                                 <Icon name='floppy' size={wp('6%')} color={'#fff'}></Icon>
@@ -479,7 +478,7 @@ const onRecordingStatusUpdate =async(e)=>{
                                                 </TouchableOpacity>
                     
                     {AttachmentPath == null || AttachmentPath.fileName == '' &&
-                   <View style={{flexDirection:'column', width: ('100%'),alignItems:'center', marginVertical: wp("1%"),marginTop:wp('10%')}}>
+                   <View style={{flexDirection:'column', width: ('100%'),alignItems:'center', marginVertical: wp("1%")}}>
                      <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#faab3b'}]} onPress={() => { pickImage() }} >
                    
                     <Icon name='upload' size={wp('6%')} color={'#fff'}></Icon>  
@@ -489,6 +488,7 @@ const onRecordingStatusUpdate =async(e)=>{
                   } 
                   
 {AudioPath == null || AudioPath.fileName == '' &&
+  <View style={{flexDirection:'column', width: ('100%'),alignItems:'center', marginVertical: wp("1%")}}>
                   <TouchableOpacity style={[styles.button_submit,{backgroundColor:'#2fc75c'}]}
                                                     onPress={recording ? stopRecording : startRecording}
                                                 >
@@ -498,6 +498,7 @@ const onRecordingStatusUpdate =async(e)=>{
                                                            {recording ? 'STOP RECORDING' : 'RECORD AUDIO'} </Text>
                                                     </View>
                                                 </TouchableOpacity>
+                                                </View>
 }
                                                 {recording &&
                                             <View style={styles.waveImage}>
@@ -506,7 +507,7 @@ const onRecordingStatusUpdate =async(e)=>{
                                             </View>
                                         }
                                          {AttachmentPath != null && AttachmentPath.fileName != '' &&
-                                        <>
+                                        <View style={{paddingBottom:20}}>
                                             <View style={styles.grid_title}>
                                                 <Text style={styles.grid_title_text}>Attachment 
                                                   
@@ -524,10 +525,10 @@ const onRecordingStatusUpdate =async(e)=>{
                                                 
                                             </View>
                                                 ))}
-                                            </>
+                                            </View>
                                     }
                                     {AudioPath != null && AudioPath.fileName != '' &&
-                                        <>
+                                        <View style={{paddingBottom:20}}>
                                             <View style={styles.grid_title}>
                                                 <Text style={styles.grid_title_text}>Audio</Text></View>
                                             <View style={styles.grid_2}>
@@ -552,22 +553,23 @@ const onRecordingStatusUpdate =async(e)=>{
                                                 <TouchableOpacity style={styles.attach_file_icon} onPress={() => { deleteAttachment(0) }}>
                                                 <Icon name='delete-circle' size={wp('6%')} color={'#d95554'}></Icon>
                                                 </TouchableOpacity>
-                                            </View></>
+                                            </View></View>
                                     }
                   
                   
                    
                   </>
 
-
+                  </KeyboardAwareScrollView>
                 </View>
 
-              </KeyboardAwareScrollView>
+             
              
                 
             </View></>
-        </TouchableWithoutFeedback></KeyboardAwareScrollView>
+            </TouchableWithoutFeedback>
         </>
+        
         <View style={styles.login_bg}>
                 <Image style={{ width: '100%', resizeMode: 'cover', height: ('100%') }} source={require('../assets/main_bg.png')} />
             </View>
@@ -581,11 +583,12 @@ const styles = StyleSheet.create({
   play_div: {
     width: ('100%'),
     flexDirection: 'column', 
-    alignItems: 'center', 
-    backgroundColor: "#fff",  
+    backgroundColor: "#fff", 
+    alignItems:'center', 
     borderRadius: 10,
     paddingTop:20,
-    paddingHorizontal:wp('2%')
+    paddingHorizontal:wp('2%'),
+    height:hp('88%'),
 },
   login_bg: {
     width: wp('100%'),
