@@ -43,9 +43,7 @@ const ViewList = (props) => {
     const [userObject, setUserObject] = useState({});
     const { isActive, type, message, openSnackBar, closeSnackBar } = useSnackbar();
     const [state, setState] = useState({});
-    const [VerifiedList, setVerifiedList] = useState(null);
-    const [AllVerifiedList, setAllVerifiedList] = useState(null);
-    const [totalVerifiedList, sertotalVerifiedList] = useState(null);
+    const [VerifiedList, setVerifiedList] = useState(null); 
     const [Name, setName] = React.useState("")
     const [RName, setRName] = React.useState("")
     const [refreshing, setRefreshing] = React.useState(false);
@@ -75,7 +73,8 @@ const ViewList = (props) => {
     const [selectedUser, setselectedUser] = React.useState("")
     const [StatusList, setStatusList] = React.useState("")
     const [UserList, setUserList] = React.useState("")
-    const [PetitionList, setPetitionList] = React.useState("")    
+    const [PetitionList, setPetitionList] = React.useState("")     
+    const [AllPetitionList, setAllPetitionList] = useState(null);   
     const isMobile = ["ఉంది", "లేదు"]
     const [imageselected, setImage] = useState(null);
     const [currentPage, setCurrentPage] = React.useState(0);
@@ -181,25 +180,15 @@ const ViewList = (props) => {
 
     const filterList = async (_text) => {
         if (_text == "" || _text == null || _text == undefined) {
-            if (pageCnt < totalVerifiedList.length) {
-                let tempList = totalVerifiedList.slice(pageCnt, pageCnt + 10);
-                setVerifiedList(VerifiedList.concat(tempList))
-                let _temp = pageCnt;
-                _temp = _temp + 10;
-                setpageCnt(_temp);
-            }
-            else {
-                setVerifiedList(totalVerifiedList)
-            }
+           
+            setPetitionList(AllPetitionList)
         }
         else {
-            let _fList = totalVerifiedList.filter(a => a.EName != null && (
-                a.EName.toUpperCase().includes(_text.toUpperCase()) ||
-                a.House_No.toUpperCase().includes(_text.toUpperCase()) ||
-                a.Voter.toUpperCase().includes(_text.toUpperCase())
-                ||
-                a.Mobile.toUpperCase().includes(_text.toUpperCase())));
-            setVerifiedList(_fList);
+            let _fList = AllPetitionList.filter(a => a.title != null && ( 
+                a.description.toUpperCase().includes(_text.toUpperCase()) ||
+                a.title.toUpperCase().includes(_text.toUpperCase()) ||
+                a.status.toUpperCase().includes(_text.toUpperCase()) ));
+            setPetitionList(_fList);
         }
 
     }
@@ -240,6 +229,7 @@ const ViewList = (props) => {
                     else if (resonseData.errorCode == 200) {
                         setTables(resonseData.response)
                         setPetitionList(resonseData.response["Table"]); 
+                        setAllPetitionList(resonseData.response["Table"])
                         var _filteredList = [];
                         resonseData.response["Table1"].map((myValue, myIndex) => {
                           _filteredList.push(myValue.name);
@@ -423,7 +413,7 @@ else{
 
                     <View >
                         <View style={styles.top_div_lbl}>
-                            <Text style={{ fontSize: wp('8%'), color: '#fff', fontFamily: 'InterBold' }}>16</Text>
+                            <Text style={{ fontSize: wp('4%'), color: '#000', fontFamily: 'InterBold' }}>Total Petitions : {(PetitionList != null ?   PetitionList.length   : 0)}</Text>
                             <TouchableOpacity onPress={addmember} style={{ backgroundColor: '#fff', borderRadius: 10, paddingVertical: 10,flexDirection:"row",alignItems:'center', paddingHorizontal: wp('5%') }}>
                             <Icon name='plus' size={wp('6%')} color={'#5592d9'}></Icon>   
                             <Text style={{ fontSize: wp('4%'), color: '#5592d9', fontFamily: 'InterBold' }}>Add</Text>
@@ -431,11 +421,18 @@ else{
                         </View>
                     </View>
                  
-                    <View style={UserLabel.play_div}>
-                    <View style={styles.top_div}>
-                                <Text style={{fontFamily:"InterRegular"}}>Total Petitions</Text>
-                                <Text style={{fontFamily:"InterBold",fontSize:wp("10%"),color:"#00334f", marginTop:hp("2%"),fontWeight:"bold"}}>{(PetitionList != null ?   PetitionList.length   : 0)}</Text> 
-                                </View> 
+                    <View style={UserLabel.play_div}> 
+                                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",width:('90%'),marginBottom:hp('1%'),paddingHorizontal:wp('2%')}}>
+                                <TextInput  
+         theme={{ colors: { primary: 'transparent',text: '#323232'  } }}
+                        style={styles.input}
+                          returnKeyType="next" 
+                          placeholder="Search Here" 
+                          onChangeText={(text) => filterList(text)}
+                          activeUnderlineColor="transparent"
+                          underlineColor="transparent" 
+                        />
+                                </View>
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <>
                                 <KeyboardAwareScrollView keyboardShouldPersistTaps='always' refreshControl={
@@ -449,7 +446,7 @@ else{
 
        
       <View style={{ flexDirection: "column",paddingHorizontal: 10,width:'100%' }}>
-      <Text style={{ fontSize: wp('4.5%'), color: "#383838", fontFamily: "InterBold" }}>{item.title}</Text>
+      <Text style={{ fontSize: wp('4.5%'), color: "#383838", fontFamily: "InterBold" }}>#{item.id}.{item.title}</Text>
       <Text style={{ fontSize: wp('3%'), color: "#adadad", fontFamily: "InterRegular",paddingVertical:hp('1%')  }} numberOfLines={1} ellipsizeMode="tail">{item.description}</Text>
   </View>
  

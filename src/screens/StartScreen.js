@@ -92,7 +92,11 @@ export default function StartScreen({ navigation }) {
             state.Error = ''
           return state;
         }); 
-        navigation.replace('DrawerStack', { screen: 'Home' })
+        if(_userObject.ROLETYPE == 'C') {
+          navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
+        } 
+        else
+          navigation.replace('DrawerStack', { screen: 'Home' }) 
       }
     })
       .then(res => {
@@ -134,11 +138,12 @@ export default function StartScreen({ navigation }) {
             payload: LoginObject,
           })
           AsyncStorage.setItem('userSession', JSON.stringify(LoginObject)) 
-          if(LoginObject.ROLE == 7) {
-            navigation.replace('DrawerStack', { screen: 'Home' })  
-          } 
-          else
-            navigation.replace('DrawerStack', { screen: 'Reports' })
+          
+         if(LoginObject.ROLETYPE == 'C') {
+          navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
+        } 
+        else
+          navigation.replace('DrawerStack', { screen: 'Home' })
         } else {
           notifyMessage('Invalid OTP')
           console.log('Invalid OTP')
@@ -151,8 +156,9 @@ export default function StartScreen({ navigation }) {
           payload: LoginObject,
         })
         AsyncStorage.setItem('userSession', JSON.stringify(LoginObject)) 
-        if(LoginObject.ROLE == 17) {
-          navigation.replace('DrawerStack', { screen: 'Reports' })  
+         
+         if(LoginObject.ROLETYPE == 'C') {
+          navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
         } 
         else
           navigation.replace('DrawerStack', { screen: 'Home' })
@@ -239,9 +245,7 @@ export default function StartScreen({ navigation }) {
     textInputRef.current = node
   }
 
-  const OTPRespose = (data) => {
-    console.log(data)
-    
+  const OTPRespose = (data) => { 
     setVal(false)
     setDisable(false)
     setloading(false)
@@ -257,8 +261,7 @@ export default function StartScreen({ navigation }) {
       setInputVisible(true) 
       setDisable(false)
       setLoginObject(resonseData.response)
-      setOTP(resonseData.response.OTP)
-      console.log("OTP:" + resonseData.response.OTP)
+      setOTP(resonseData.response.OTP) 
       setGenOTP(resonseData.response.OTP)
       if (resonseData.status == 200) {
         // Existing Client

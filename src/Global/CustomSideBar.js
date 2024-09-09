@@ -124,6 +124,9 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                     case 'Dashboard':
                         props.nav.navigate("Home");
                         break;
+                        case 'MP Dashboard':
+                        props.nav.navigate("MPdashboard");
+                        break;
                         case 'Reports':
                             props.nav.navigate("Reports");
                             break;
@@ -188,6 +191,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                 }
                  {userObject!=null && userObject.ROLETYPE=='C' &&
                  <>
+                  <CustomDrawerItem label='MP Dashboard' icon="view-list" nav={navigation}  />
                  <CustomDrawerItem label='Assigned Petitions' icon="view-list" nav={navigation}  />
                  <CustomDrawerItem label='User Wise Rank' icon="view-list" nav={navigation}  />
                  </>
