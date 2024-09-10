@@ -92,7 +92,7 @@ export default function StartScreen({ navigation }) {
             state.Error = ''
           return state;
         }); 
-        if(_userObject.ROLETYPE == 'C') {
+        if(_userObject.ROLETYPE == 'M') {
           navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
         } 
         else

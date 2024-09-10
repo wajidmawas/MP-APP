@@ -189,7 +189,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                 {userObject!=null && userObject.ROLETYPE!='C' &&
                  <CustomDrawerItem label='New Petition' icon="plus" nav={navigation}  />
                 }
-                 {userObject!=null && userObject.ROLETYPE=='C' &&
+                 {userObject!=null && userObject.ROLETYPE=='M' &&
                  <>
                   <CustomDrawerItem label='MP Dashboard' icon="view-list" nav={navigation}  />
                  <CustomDrawerItem label='Assigned Petitions' icon="view-list" nav={navigation}  />

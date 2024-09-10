@@ -34,6 +34,7 @@ import NetInfo from '@react-native-community/netinfo';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { Audio } from 'expo-av';
 import { COLORS } from "../components/colors";
+import * as DocumentPicker from "expo-document-picker";
 const AddMember = (props) => {
   const [MemberName, setMemberName] = useState({ value: '', error: '' })
   const [PTitle, setPTitle] = useState({ value: '', error: '' })
@@ -94,25 +95,27 @@ const AddMember = (props) => {
     //console.log("Location:"+location.coords.latitude)
   }
   const pickImage = async (flg) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    try{  
+    // let result = await ImagePicker.launchImageLibraryAsync({
+      let result = await DocumentPicker.getDocumentAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         aspect: [4, 3],
         allowsMultipleSelection: true,
         quality: 1,
     });
 
-
-
+ 
     if (!result.canceled) {
       var files=[];
-      result.assets.map((myValue, myIndex) => {
-        files.push({ file: myValue.uri, fileName: myValue.uri.split("/").slice(-1)[0],Dur:0 })
-      });
+      files.push({ file: result.uri, fileName: result.uri.split("/").slice(-1)[0],Dur:0 })
       setAttachmentList(files); 
         // let image = await ImageManipulator.manipulateAsync(result.uri,[{resize:{width:1080,height:720}}],{compress: 0})
-        let fileInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
-        setAttachmentPath({ file: result.assets[0].uri, fileName: result.assets[0].uri.split("/").slice(-1)[0],Dur:0 })
-
+        let fileInfo = await FileSystem.getInfoAsync(result.uri);
+        setAttachmentPath({ file: result.uri, fileName: result.uri.split("/").slice(-1)[0],Dur:0 })
+    } 
+    }
+    catch (error) {
+      console.log(error);
     }
 };
 
