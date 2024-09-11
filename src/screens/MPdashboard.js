@@ -185,6 +185,10 @@ const MPdashboard = (props) => {
         setpageIndex(0);
     }
 
+    const ViewAttachment = (file) => {
+        Linking.openURL(file);
+    } 
+
     const ApprovePetition = (item) => {   
         var service = new Services();
                 const body = {
@@ -335,7 +339,7 @@ const MPdashboard = (props) => {
 <View style={{ flexDirection: "row",alignItems:'center',justifyContent:"space-between",paddingHorizontal:10,width:'100%' }}>
  
 <View style={{ flexDirection: "row",alignItems:'center',width:'23%' }}> 
-<TouchableOpacity onPress={() => { showdetails(item) }} style={{ flexDirection: "row", alignItems: "center" }}>
+<TouchableOpacity onPress={() => { ViewAttachment(item.attachment) }} style={{ flexDirection: "row", alignItems: "center" }}>
 <Icon name='eye' size={wp('4%')} color={'#5592d9'}></Icon>
 <Text  style={{ marginLeft:wp('2%'),color: "#000", fontSize: wp('3.5%'), fontFamily: 'InterBold' }}>View</Text>
 </TouchableOpacity>
