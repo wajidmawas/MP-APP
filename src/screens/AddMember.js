@@ -313,7 +313,7 @@ const onRecordingStatusUpdate =async(e)=>{
                 payload.append('lat', location != undefined && location != null && location.coords != null ? location.coords.latitude : "");
                 payload.append('lon', location != undefined && location != null && location.coords != null ? location.coords.longitude : "");
                 if (AttachmentPath != null && AttachmentPath != '' && AttachmentPath.file != '') {
-                  let uriParts = AudioPath.file.split('.');
+                  let uriParts = AttachmentPath.file.split('.');
                     let fileType = uriParts[uriParts.length - 1];
                     payload.append('imagePath2', {
                         uri: AttachmentPath.file,
