@@ -1,4 +1,9 @@
 {
+  "cli": {
+    "version": ">= 0.52.0",
+    "requireCommit": true,
+    "promptToConfigurePushNotifications": false
+  },
   "build": {
     "preview": {
       "android": {
@@ -13,11 +18,10 @@
     "preview3": {
       "developmentClient": true
     },
-    "production": {}
-  },
-  "cli": {
-    "version": ">= 0.52.0",
-    "requireCommit": true,
-    "promptToConfigurePushNotifications": false
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
   }
 }
