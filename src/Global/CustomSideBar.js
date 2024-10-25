@@ -132,6 +132,9 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                             break;
                         case 'New Petition':
                             props.nav.navigate("AddMember");
+                            break; 
+                        case 'New Draft':
+                            props.nav.navigate("AddDraft");
                             break;
                        case 'User Wise Petitions':
                             props.nav.navigate("UserWisePetitions");
@@ -185,9 +188,16 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
 
             <View style={styles.Container1}>
                 {/* <CustomDrawerItem label='My Profile' icon="username" nav={navigation}     /> */}
+                {userObject!=null && userObject.ROLETYPE!='D'  &&
                 <CustomDrawerItem label='Dashboard' icon="view-dashboard" nav={navigation} />   
-                {userObject!=null && userObject.ROLETYPE!='C' &&
+                }
+
+               
+                {userObject!=null && userObject.ROLETYPE!='C' && userObject!=null && userObject.ROLETYPE!='D' &&
                  <CustomDrawerItem label='New Petition' icon="plus" nav={navigation}  />
+                }
+               { userObject!=null && userObject.ROLETYPE=='D' &&
+                 <CustomDrawerItem label='New Draft' icon="plus" nav={navigation}  />
                 }
                  {userObject!=null && userObject.ROLETYPE=='M' &&
                  <>
@@ -196,7 +206,7 @@ const [AlertHdrMsg, setAlertHdrMsg] = useState("Are you sure you want to delete 
                  <CustomDrawerItem label='User Wise Rank' icon="view-list" nav={navigation}  />
                  </>
                 }
-                {userObject!=null && userObject.ROLETYPE!='C' &&
+                {userObject!=null && userObject.ROLETYPE!='C' && userObject!=null && userObject.ROLETYPE!='D' &&
                 <>
                 <CustomDrawerItem label='User Wise Petitions' icon="view-list" nav={navigation} /> 
                 <CustomDrawerItem label='Department Wise Petitions' icon="view-list" nav={navigation} /> 

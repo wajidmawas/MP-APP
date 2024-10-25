@@ -95,6 +95,9 @@ export default function StartScreen({ navigation }) {
         if(_userObject.ROLETYPE == 'M') {
           navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
         } 
+        else  if(_userObject.ROLETYPE == 'D') {
+          navigation.replace('DrawerStack', { screen: 'AddDraft' })  
+        } 
         else
           navigation.replace('DrawerStack', { screen: 'Home' }) 
       }
@@ -141,6 +144,9 @@ export default function StartScreen({ navigation }) {
           
          if(LoginObject.ROLETYPE == 'C') {
           navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
+        } 
+        else  if(_userObject.ROLETYPE == 'D') {
+          navigation.replace('DrawerStack', { screen: 'AddDraft' })  
         } 
         else
           navigation.replace('DrawerStack', { screen: 'Home' })

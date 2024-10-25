@@ -22,6 +22,7 @@ import { AppContext } from '../Global/Stores';
 import Container from '../components/Container';
 import 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
+import AddDraft from '../screens/AddDraft';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 import { NavigationActions } from 'react-navigation'
@@ -181,6 +182,21 @@ const AppNavigation = () => {
              <Drawer.Screen
                 name="AddMember"
                 component={AddMember}
+                options={{
+                    drawerLabel: 'AddMember',
+                    headerShown: false,
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-home"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="AddDraft"
+                component={AddDraft}
                 options={{
                     drawerLabel: 'AddMember',
                     headerShown: false,
