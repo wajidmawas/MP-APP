@@ -95,7 +95,7 @@ export default function StartScreen({ navigation }) {
         if(_userObject.ROLETYPE == 'M') {
           navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
         } 
-        else  if(_userObject.ROLETYPE == 'D') {
+        else  if(_userObject.ROLETYPE == 'N') {
           navigation.replace('DrawerStack', { screen: 'AddDraft' })  
         } 
         else
