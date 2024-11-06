@@ -145,7 +145,7 @@ export default function StartScreen({ navigation }) {
          if(LoginObject.ROLETYPE == 'C') {
           navigation.replace('DrawerStack', { screen: 'MPdashboard' })  
         } 
-        else  if(_userObject.ROLETYPE == 'D') {
+        else  if(LoginObject.ROLETYPE == 'N') {
           navigation.replace('DrawerStack', { screen: 'AddDraft' })  
         } 
         else

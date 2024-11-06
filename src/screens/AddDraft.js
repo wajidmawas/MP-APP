@@ -225,11 +225,11 @@ const onRecordingStatusUpdate =async(e)=>{
     setrecordingDuration(Math.floor((e.durationMillis/1000) % 60)+1 + " sec[s]")
 }
   const onLoad = async () => {
-    await AsyncStorage.getItem("userSession").then(async (value) => {
-      let obj = JSON.parse(value);
-      var _userObject = obj;
-      if (_userObject != undefined) {
-        setUserObject(_userObject)
+    try {
+    const value = await AsyncStorage.getItem("userSession");
+    if (value) {
+        const obj = JSON.parse(value);        
+        setUserObject(obj); // Update state
         var service = new Services();
         const body = {
           TypeId: 1,
@@ -265,9 +265,10 @@ const onRecordingStatusUpdate =async(e)=>{
           }
         });
       }
-    }).then(res => {
-      //do something else
-    });
+    }
+   catch (error) {
+    console.error("Error in AddDrafts:", error);
+}
 
   }
 

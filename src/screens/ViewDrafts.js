@@ -112,10 +112,10 @@ const ViewDrafts = (props) => {
     const onLoad = async () => {
         await AsyncStorage.getItem("userSession").then(async (value) => {
           let obj = JSON.parse(value);
-          var _userObject = obj;
-          if (_userObject != undefined) {
-            setUserObject(_userObject)
-            setuserid(_userObject.ID)
+         
+          if (obj != undefined) {
+            setUserObject(obj)
+            setuserid(obj.ID)
             GetDrafts();
              
           }
