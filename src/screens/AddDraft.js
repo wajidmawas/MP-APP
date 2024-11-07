@@ -283,11 +283,13 @@ const onRecordingStatusUpdate =async(e)=>{
     else if (PDesc.value === '' || PDesc.value === undefined
       || PDesc.value === null ) {
       notifyMessage('Please enter summary')
-    }    
+    } 
+    // else if (AttachmentPath === null || AttachmentPath === '' || AttachmentPath.file === ''){
+    //   notifyMessage('Please upload attachment')
+    // }   
     else {
       var service = new Services(); 
-              var payload = new FormData();
-
+              var payload = new FormData(); 
                 payload.append('title', PTitle.value);
                 payload.append('dept', 0);  
                 payload.append('desc', PDesc.value); 
@@ -314,7 +316,9 @@ const onRecordingStatusUpdate =async(e)=>{
                     });
 
                 } 
+               
       service.postFormData('/_SavePetitionDetails_Draft', payload).then(data => {
+        console.log("Response" + JSON.stringify(data));
         setVal(false)
         if (data == null || data == "") {
           openSnackBar("Invalid request object");
@@ -488,16 +492,19 @@ const onRecordingStatusUpdate =async(e)=>{
                                         }
                                          {AttachmentPath != null && AttachmentPath.fileName != '' &&
                                         <View style={{paddingBottom:20}}>
-                                            <View style={styles.grid_title}>
-                                                <Text style={styles.grid_title_text}>Attachment 
-                                                  
-                                                <TouchableOpacity style={[styles.attach_file_icon]} onPress={() => { deleteAttachment(1) }}>
+                                            <View style={[styles.grid_title,{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}]}>
+                                              
+                                               <Text style={[styles.grid_title_text,{textAlign:'left'}]}>Attachment </Text>
+                                                  <View style={{flexDirection:'row',alignItems:'center'}}>
+                                                <TouchableOpacity onPress={() => { deleteAttachment(1) }}>
                                                 <Icon name='delete-circle' size={wp('6%')} color={'#d95554'}></Icon>
                                                 </TouchableOpacity>
-                                                <TouchableOpacity style={[styles.attach_file_icon]} onPress={() => { pickImage() }}>
+                                                <TouchableOpacity style={[{marginLeft:10,flexDirection:'row',alignItems:'center'}]} onPress={() => { pickImage() }}>
                                                 <Icon name='plus' size={wp('6%')} color={'#5592d9'}></Icon>
+                                                <Text style={{color:'#5592d9',fontSize:wp('3%')}}>Add</Text>
                                                 </TouchableOpacity>
-                                                </Text></View>
+                                                </View>
+                                                </View> 
                                                 {AttachmentList != null && AttachmentList.map((item, index) => (
                                             <View style={styles.grid_2} key={index}>
                                             <Icon name='attachment' size={wp('6%')} color={'#ff7900'}></Icon>
